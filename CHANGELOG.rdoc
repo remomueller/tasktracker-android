@@ -1,0 +1,3 @@
+== 0.0.0 (unreleased)
+
+* Initial implementation that allows a user to sign in and view a list of past due stickies
