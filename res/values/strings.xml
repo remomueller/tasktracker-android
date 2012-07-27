@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Task Tracker</string>
+
+  <string name="button_send">Submit</string>
+  <string name="username_hint">Enter Email</string>
+
+  <string name="stickies_index">Stickies</string>
+  <string name="stickies_show">Sticky</string>
+</resources>
