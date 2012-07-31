@@ -8,40 +8,40 @@ import android.widget.EditText;
 
 public class MainActivity extends Activity
 {
-    public final static String HOST_URL = "https://tasktracker.partners.org";
+    public final static String HOST_URL = "https://sleepepi.partners.org/edge/tasktracker";
 
     public final static String USERNAME = "com.example.mysecondapp.USERNAME";
     public final static String PASSWORD = "com.example.mysecondapp.PASSWORD";
 
-    private EditText usernameText;
-    private EditText passwordText;
-    private String username;
-    private String password;
+//     private EditText usernameText;
+//     private EditText passwordText;
+//     private String username;
+//     private String password;
 
-    /** Called when the activity is first created. */
+//     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+//         setContentView(R.layout.main);
 
-        usernameText = (EditText) findViewById(R.id.username);
-        passwordText = (EditText) findViewById(R.id.password);
+//         usernameText = (EditText) findViewById(R.id.username);
+//         passwordText = (EditText) findViewById(R.id.password);
     }
 
-    // Login
-    public void myClickHandler(View view)
-    {
-        username = usernameText.getText().toString();
-        password = passwordText.getText().toString();
+//     // Login
+//     public void myClickHandler(View view)
+//     {
+//         username = usernameText.getText().toString();
+//         password = passwordText.getText().toString();
 
-        // new DownloadWebpageText().execute(stringUrl);
-        // new DownloadJSONSTickies().execute(stringUrl);
-        Intent intent = new Intent(this, StickiesIndex.class);
+//         // new DownloadWebpageText().execute(stringUrl);
+//         // new DownloadJSONSTickies().execute(stringUrl);
+//         Intent intent = new Intent(this, StickiesIndex.class);
 
-        intent.putExtra(USERNAME, username);
-        intent.putExtra(PASSWORD, password);
+//         intent.putExtra(USERNAME, username);
+//         intent.putExtra(PASSWORD, password);
 
-        startActivity(intent);
-    }
+//         startActivity(intent);
+//     }
 }

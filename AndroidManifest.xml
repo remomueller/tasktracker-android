@@ -12,13 +12,33 @@
 
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
 
-        <activity android:name="MainActivity"
+<!--         <activity android:name="MainActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity> -->
+
+        <activity
+            android:label="@string/app_name"
+            android:name=".DashboardActivity" >
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
+        <!--  Login Activity -->
+        <activity
+            android:label="Login Account"
+            android:name=".LoginActivity"></activity>
+
+        <!--  Register Activity -->
+<!--         <activity
+            android:label="Register New Account"
+            android:name=".RegisterActivity"></activity>
+ -->
 
         <activity android:name=".StickiesIndex"
                   android:label="@string/stickies_index" >

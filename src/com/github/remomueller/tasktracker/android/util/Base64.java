@@ -146,7 +146,7 @@
  * @version 2.3.7
  */
 
-package com.github.remomueller.tasktracker.android;
+package com.github.remomueller.tasktracker.android.util;
 
 public class Base64
 {

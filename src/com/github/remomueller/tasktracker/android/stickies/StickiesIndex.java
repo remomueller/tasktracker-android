@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,18 +29,22 @@ import org.apache.commons.io.IOUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
+import com.github.remomueller.tasktracker.android.util.Base64;
+import com.github.remomueller.tasktracker.android.util.UserFunctionsGSON;
+
 
 public class StickiesIndex extends Activity {
     TextView selection;
 
-    private static final String TAG = "StickiesIndex";
+    private static final String TAG = "TaskTrackerAndroid";
 
     ArrayList<Sticky> stickies = new ArrayList<Sticky>();
 
     public final static String STICKY_ID = "com.github.remomueller.tasktracker.android.stickies.STICKY_ID";
 
-    private String username;
-    private String password;
+    UserFunctionsGSON userFunctionsGSON;
+    Button btnLogout;
+
 
     ArrayAdapter<String> mAdapter;
     StickyAdapter stickyAdapter;
@@ -51,9 +56,9 @@ public class StickiesIndex extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        userFunctionsGSON = new UserFunctionsGSON();
+
         Intent intent = getIntent();
-        username = intent.getStringExtra(MainActivity.USERNAME);
-        password = intent.getStringExtra(MainActivity.PASSWORD);
 
         new DownloadJSONSTickies().execute(MainActivity.HOST_URL);
 
@@ -78,6 +83,22 @@ public class StickiesIndex extends Activity {
             }
 
         });
+
+        // user already logged in show dashboard
+            btnLogout = (Button) findViewById(R.id.btnLogout);
+
+            btnLogout.setOnClickListener(new View.OnClickListener() {
+
+                public void onClick(View arg0) {
+                    // TODO Auto-generated method stub
+                    userFunctionsGSON.logoutUser(getApplicationContext());
+                    Intent login = new Intent(getApplicationContext(), LoginActivity.class);
+                    login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(login);
+                    // Closing dashboard screen
+                    finish();
+                }
+            });
     }
 
     private class DownloadJSONSTickies extends AsyncTask<String, Void, String> {
@@ -126,7 +147,11 @@ public class StickiesIndex extends Activity {
         String s = formatter.format(date);
         String due_date_end_date = s;
 
-        URL url = new URL(MainActivity.HOST_URL + "/stickies.json?status[]=planned&status[]=completed&order=stickies.due_date+DESC&due_date_end_date="+due_date_end_date);
+        String email = userFunctionsGSON.getEmail(getApplicationContext());
+        String password = userFunctionsGSON.getPassword(getApplicationContext());
+        String site_url = userFunctionsGSON.getSiteURL(getApplicationContext());
+
+        URL url = new URL(site_url + "/stickies.json?status[]=planned&status[]=completed&owner_id=me&order=stickies.due_date+DESC&due_date_end_date="+due_date_end_date);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000 /* milliseconds */);
         conn.setConnectTimeout(15000 /* milliseconds */);
@@ -136,7 +161,8 @@ public class StickiesIndex extends Activity {
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("WWW-Authenticate", "Basic realm='Application'");
 
-        String decoded = username+":"+password;
+
+        String decoded = email+":"+password;
         String encoded = Base64.encodeBytes( decoded.getBytes() );
 
         conn.setRequestProperty("Authorization", "Basic "+encoded);

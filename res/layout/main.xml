@@ -3,9 +3,9 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
+    android:background="#3b3b3b" >
 
-    <EditText android:id="@+id/username"
+<!--     <EditText android:id="@+id/username"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="@string/username_hint"
@@ -21,5 +21,5 @@
         android:layout_height="wrap_content"
         android:text="@string/button_send"
         android:onClick="myClickHandler" />
-
+ -->
 </LinearLayout>
