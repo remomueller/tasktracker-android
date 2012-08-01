@@ -2,10 +2,12 @@ package com.github.remomueller.tasktracker.android;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -39,9 +41,12 @@ public class StickyAdapter extends BaseAdapter {
         if(convertView==null)
             vi = inflater.inflate(R.layout.stickies_index_item, null);
 
-        TextView sticky_id = (TextView)vi.findViewById(R.id.sticky_id);
-        TextView description = (TextView)vi.findViewById(R.id.description);
-        TextView due_date = (TextView)vi.findViewById(R.id.due_date);
+        TextView sticky_id = (TextView) vi.findViewById(R.id.sticky_id);
+        TextView description = (TextView) vi.findViewById(R.id.description);
+        TextView due_date = (TextView) vi.findViewById(R.id.due_date);
+        // RelativeLayout tags_container = (RelativeLayout) vi.findViewById(R.id.tags_container);
+
+        TextView single_tag = (TextView) vi.findViewById(R.id.single_tag);
 
         Sticky sticky = new Sticky();
         sticky = data.get(position);
@@ -49,6 +54,19 @@ public class StickyAdapter extends BaseAdapter {
         sticky_id.setText("" + sticky.id);
         description.setText(sticky.description);
         due_date.setText(sticky.due_date.length() > 10 ? sticky.due_date.substring(0, 10) : "");
+
+
+        // final TextView tagtext = new TextView(vi);
+
+        for(int i = 0; i < sticky.tags.length; i++){
+            // final TextView tagtext = new TextView(vi);
+            if(i == 0){
+                single_tag.setText(sticky.tags[i].name);
+                single_tag.setBackgroundColor(Color.parseColor(sticky.tags[i].color));
+            }
+            // tagtext.setText("This is: " + sticky.tags[i].name);
+            // tags_container.addView(tagtext);
+        }
 
         return vi;
     }

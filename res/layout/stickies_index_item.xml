@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/list_selector"
     android:orientation="horizontal"
     android:padding="5dip" >
 
@@ -10,17 +11,18 @@
         android:id="@+id/sticky_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:textColor="#2C2C2C"
         android:typeface="sans"
         android:textSize="15dip"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <!-- Sticky Description -->
     <TextView
         android:id="@+id/description"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/sticky_id"
+        android:textColor="#2C2C2C"
         android:textSize="10dip"
         android:layout_marginTop="1dip" />
 
@@ -31,9 +33,35 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/sticky_id"
+        android:textColor="#2C2C2C"
         android:gravity="right"
         android:layout_marginRight="5dip"
         android:textSize="10dip"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/single_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:textColor="#ffffff"
+        android:layout_below="@id/due_date"
+        android:layout_marginRight="5dip"
+        android:paddingLeft="4px"
+        android:paddingRight="4px"
+        android:paddingTop="1px"
+        android:paddingBottom="2px"
+        android:textSize="10dip"
+        android:textStyle="bold" />
+<!--
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/tags_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:textColor="#ffffff"
+        android:layout_below="@id/due_date"
+        android:layout_marginRight="5dip"
+        android:textSize="10dip" />
+ -->
 </RelativeLayout>

@@ -5,4 +5,10 @@ public class Sticky {
   public String description;
   public String due_date;
 
+  public String group_description;
+
+  public boolean completed;
+
+  public Tag[] tags;
+
 }

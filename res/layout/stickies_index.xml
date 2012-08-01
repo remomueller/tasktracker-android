@@ -7,18 +7,22 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:background="#2C2C2C"
+        android:padding="10px"
+        >
 
         <TextView
             android:id="@+id/selection"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#ff0000cc"
             android:textStyle="bold"
             android:layout_weight="3.0"
+            android:textColor="#fff"
+            android:text="Loading Stickies..."
             />
 
-        <Button android:layout_width="match_parent"
+        <Button android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Logout"
             android:textSize="15dip"
@@ -35,7 +39,6 @@
         android:id="@+id/stickies_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="#b5b5b5"
-        android:dividerHeight="1dp"
+        style="@style/ListView"
         />
 </LinearLayout>

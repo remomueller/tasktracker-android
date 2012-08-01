@@ -121,7 +121,7 @@ public class StickiesIndex extends Activity {
 
             try {
               stickies_array = gson.fromJson(json, Sticky[].class);
-              result = "Found " + stickies_array.length + " Stick" + (stickies_array.length == 1 ? "y" : "ies");
+              result = stickies_array.length + " Stick" + (stickies_array.length == 1 ? "y" : "ies");
               selection.setText(result);
             } catch (JsonParseException e) {
               stickies_array = new Sticky[0];

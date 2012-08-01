@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="ListView">
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:divider">#b5b5b5</item>
+        <item name="android:listSelector">@drawable/list_selector</item>
+        <item name="android:background">#ffffff</item>
+    </style>
+
+</resources>
