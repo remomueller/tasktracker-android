@@ -55,7 +55,8 @@
         android:textStyle="bold"
         android:shadowDx="1.2"
         android:shadowColor="#333"
-        android:shadowRadius="1.2" />
+        android:shadowRadius="1.2"
+        android:background="@android:color/transparent" />
 <!--
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/tags_container"

@@ -17,14 +17,22 @@
         android:textStyle="bold"/>
 
     <!-- Sticky Description -->
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/sticky_id"
+        android:layout_marginTop="16dp"
+        >
     <TextView
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/sticky_id"
         android:textColor="#2C2C2C"
-        android:textSize="10dip"
+        android:textSize="15dip"
         android:layout_marginTop="1dip" />
+
+    </ScrollView>
 
     <!-- Sticky Due Date -->
     <TextView
@@ -39,5 +47,23 @@
         android:textSize="10dip"
         android:textStyle="bold"/>
 
+    <TextView
+        android:id="@+id/single_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:textColor="#ffffff"
+        android:layout_below="@id/due_date"
+        android:layout_marginRight="5dip"
+        android:paddingLeft="4px"
+        android:paddingRight="4px"
+        android:paddingTop="1px"
+        android:paddingBottom="2px"
+        android:textSize="10dip"
+        android:textStyle="bold"
+        android:shadowDx="1.2"
+        android:shadowColor="#333"
+        android:shadowRadius="1.2"
+        android:background="@android:color/transparent" />
 
 </RelativeLayout>

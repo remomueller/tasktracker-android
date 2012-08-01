@@ -38,9 +38,18 @@ public class StickiesIndex extends Activity {
 
     private static final String TAG = "TaskTrackerAndroid";
 
-    ArrayList<Sticky> stickies = new ArrayList<Sticky>();
+    public ArrayList<Sticky> stickies = new ArrayList<Sticky>();
 
+    public final static String STICKY_POSITION = "com.github.remomueller.tasktracker.android.stickies.STICKY_POSITION";
     public final static String STICKY_ID = "com.github.remomueller.tasktracker.android.stickies.STICKY_ID";
+    public final static String STICKY_DESCRIPTION = "com.github.remomueller.tasktracker.android.stickies.STICKY_DESCRIPTION";
+    public final static String STICKY_GROUP_DESCRIPTION = "com.github.remomueller.tasktracker.android.stickies.STICKY_GROUP_DESCRIPTION";
+    public final static String STICKY_DUE_DATE = "com.github.remomueller.tasktracker.android.stickies.STICKY_DUE_DATE";
+
+    public final static String TAG_ID = "com.github.remomueller.tasktracker.android.stickies.TAG_ID";
+    public final static String TAG_NAME = "com.github.remomueller.tasktracker.android.stickies.TAG_NAME";
+    public final static String TAG_COLOR = "com.github.remomueller.tasktracker.android.stickies.TAG_COLOR";
+
 
     UserFunctionsGSON userFunctionsGSON;
     Button btnLogout;
@@ -50,6 +59,10 @@ public class StickiesIndex extends Activity {
     StickyAdapter stickyAdapter;
     ListView list;
     Context context;
+
+    public ArrayList<Sticky> getStickies() {
+        return stickies;
+    }
 
 
     @Override
@@ -74,11 +87,35 @@ public class StickiesIndex extends Activity {
 
         list.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Sticky sticky = stickies.get(position);
+
                 String text = stickies.get(position).id + ": " + stickies.get(position).description;
+
 
                 Intent intent = new Intent(context, StickiesShow.class);
 
-                intent.putExtra(STICKY_ID, text);
+                intent.putExtra(STICKY_POSITION, Integer.toString(position));
+                intent.putExtra(STICKY_ID, Integer.toString(sticky.id));
+                intent.putExtra(STICKY_DESCRIPTION, sticky.description);
+                intent.putExtra(STICKY_GROUP_DESCRIPTION, sticky.group_description);
+                intent.putExtra(STICKY_DUE_DATE, sticky.due_date);
+
+                String tag_id = "0";
+                String tag_name = "";
+                String tag_color = "#80FFFFFF";
+
+                for(int i = 0; i < sticky.tags.length; i++){
+                    if(i == 0){
+                        tag_id = Integer.toString(sticky.tags[i].id);
+                        tag_name = sticky.tags[i].name;
+                        tag_color = sticky.tags[i].color;
+                    }
+                }
+
+                intent.putExtra(TAG_ID, tag_id);
+                intent.putExtra(TAG_NAME, tag_name);
+                intent.putExtra(TAG_COLOR, tag_color);
+
                 startActivity(intent);
             }
 
@@ -171,7 +208,7 @@ public class StickiesIndex extends Activity {
         conn.connect();
 
         int response = conn.getResponseCode();
-        Log.d(TAG, "The response is: " + response);
+        // Log.d(TAG, "The response is: " + response);
         is = conn.getInputStream();
 
         // Convert the InputStream into a string
