@@ -10,15 +10,16 @@ public class StickiesShow extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.sticky_show);
+
         // Get the message from the intent
         Intent intent = getIntent();
         String message = intent.getStringExtra(StickiesIndex.STICKY_ID);
 
-        // Create the text view
-        TextView textView = new TextView(this);
-        textView.setTextSize(40);
-        textView.setText(message);
 
-        setContentView(textView);
+        // Create the text view
+        TextView description = (TextView) findViewById(R.id.description);
+        // textView.setTextSize(40);
+        description.setText(message);
     }
 }
