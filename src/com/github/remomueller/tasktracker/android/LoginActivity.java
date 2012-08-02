@@ -13,13 +13,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.net.Uri; // For Registration Link
 
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 import com.github.remomueller.tasktracker.android.util.UserFunctionsGSON;
 
 public class LoginActivity extends Activity {
     Button btnLogin;
-    // Button btnLinkToRegister;
+    Button btnLinkToRegister;
     EditText inputEmail;
     EditText inputPassword;
     TextView loginErrorMsg;
@@ -44,7 +45,7 @@ public class LoginActivity extends Activity {
         inputEmail = (EditText) findViewById(R.id.loginEmail);
         inputPassword = (EditText) findViewById(R.id.loginPassword);
         btnLogin = (Button) findViewById(R.id.btnLogin);
-        // btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
+        btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
         loginErrorMsg = (TextView) findViewById(R.id.login_error);
 
         // Login button Click Event
@@ -81,6 +82,15 @@ public class LoginActivity extends Activity {
                 }else{
                     loginErrorMsg.setText("Incorrect username/password");
                 }
+            }
+        });
+
+        btnLinkToRegister.setOnClickListener( new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                Uri uri = Uri.parse( "https://tasktracker.partners.org/users/register" );
+                startActivity( new Intent( Intent.ACTION_VIEW, uri ) );
             }
         });
 
