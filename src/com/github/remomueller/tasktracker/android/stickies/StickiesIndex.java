@@ -157,17 +157,20 @@ public class StickiesIndex extends Activity {
             Sticky[] stickies_array;
 
             try {
-              stickies_array = gson.fromJson(json, Sticky[].class);
-              result = stickies_array.length + " Stick" + (stickies_array.length == 1 ? "y" : "ies");
-              selection.setText(result);
+                stickies_array = gson.fromJson(json, Sticky[].class);
+                if(stickies_array == null){
+                    stickies_array = new Sticky[0];
+                }
+                result = stickies_array.length + " Stick" + (stickies_array.length == 1 ? "y" : "ies");
+                selection.setText(result);
             } catch (JsonParseException e) {
-              stickies_array = new Sticky[0];
-              result = "Login Failed: Please make sure your email and password are correct.";
-              selection.setText(result);
+                stickies_array = new Sticky[0];
+                result = "Login Failed: Please make sure your email and password are correct.";
+                selection.setText(result);
             }
 
             for(int i = 0; i < stickies_array.length; i++){
-              stickies.add(stickies_array[i]);
+                stickies.add(stickies_array[i]);
             }
 
             stickyAdapter.notifyDataSetChanged();
@@ -212,7 +215,15 @@ public class StickiesIndex extends Activity {
         is = conn.getInputStream();
 
         // Convert the InputStream into a string
-        String contentAsString = readIt(is, len);
+        String contentAsString = "";
+        if(is != null){
+           contentAsString = readIt(is, len);
+        }
+
+        if(contentAsString == null){
+            contentAsString = "";
+        }
+
         return contentAsString;
 
       } finally {
