@@ -45,6 +45,7 @@ public class StickiesIndex extends Activity {
     public final static String STICKY_DESCRIPTION = "com.github.remomueller.tasktracker.android.stickies.STICKY_DESCRIPTION";
     public final static String STICKY_GROUP_DESCRIPTION = "com.github.remomueller.tasktracker.android.stickies.STICKY_GROUP_DESCRIPTION";
     public final static String STICKY_DUE_DATE = "com.github.remomueller.tasktracker.android.stickies.STICKY_DUE_DATE";
+    public final static String STICKY_COMPLETED = "com.github.remomueller.tasktracker.android.stickies.STICKY_COMPLETED";
 
     public final static String TAG_ID = "com.github.remomueller.tasktracker.android.stickies.TAG_ID";
     public final static String TAG_NAME = "com.github.remomueller.tasktracker.android.stickies.TAG_NAME";
@@ -99,6 +100,7 @@ public class StickiesIndex extends Activity {
                 intent.putExtra(STICKY_DESCRIPTION, sticky.description);
                 intent.putExtra(STICKY_GROUP_DESCRIPTION, sticky.group_description);
                 intent.putExtra(STICKY_DUE_DATE, sticky.due_date);
+                intent.putExtra(STICKY_COMPLETED, Boolean.toString(sticky.completed));
 
                 String tag_id = "0";
                 String tag_name = "";

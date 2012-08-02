@@ -61,7 +61,7 @@ public class StickyAdapter extends BaseAdapter {
 
 
         sticky_id.setText(Integer.toString(sticky.id));
-        if(sticky.completed == true){
+        if(sticky.completed){
             sticky_id.setPaintFlags(sticky_id.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }else{
             sticky_id.setPaintFlags(sticky_id.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));

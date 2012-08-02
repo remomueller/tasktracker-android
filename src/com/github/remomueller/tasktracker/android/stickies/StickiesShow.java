@@ -26,6 +26,7 @@ public class StickiesShow extends Activity {
         sticky.description = intent.getStringExtra(StickiesIndex.STICKY_DESCRIPTION);
         sticky.group_description = intent.getStringExtra(StickiesIndex.STICKY_GROUP_DESCRIPTION);
         sticky.due_date = intent.getStringExtra(StickiesIndex.STICKY_DUE_DATE);
+        sticky.completed = Boolean.parseBoolean(intent.getStringExtra(StickiesIndex.STICKY_COMPLETED));
 
         // Hopefully won't be needed in future and can access from database
         Tag tag = new Tag();
@@ -42,7 +43,7 @@ public class StickiesShow extends Activity {
 
         sticky_id.setText(Integer.toString(sticky.id));
 
-        if(sticky.completed == true){
+        if(sticky.completed){
             sticky_id.setPaintFlags(sticky_id.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
