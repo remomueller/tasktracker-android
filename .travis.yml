@@ -13,5 +13,5 @@ before_install:
   # Currently:
   #  4- SDK Platform Android 4.1, API 16, revision 2
   # 10- SDK Platform Android 2.3.3, API 10, revision 2
-  - android list sdk -a
-  - android update sdk --filter 1,2,4 --no-ui --force
+  - android list sdk
+  - android update sdk --filter 1,2,9 --no-ui --force
