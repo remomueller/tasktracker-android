@@ -25,6 +25,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_SITE_URL = "site_url";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_PASSWORD = "password";
+    private static final String KEY_COOKIE = "cookie";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -37,7 +38,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_SITE_URL + " TEXT,"
                 + KEY_EMAIL + " TEXT UNIQUE,"
-                + KEY_PASSWORD + " TEXT" + ")";
+                + KEY_PASSWORD + " TEXT,"
+                + KEY_COOKIE + " TEXT" + ")";
         db.execSQL(CREATE_LOGIN_TABLE);
     }
 
@@ -61,6 +63,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_SITE_URL, site_url); // Site URL
         values.put(KEY_EMAIL, email); // Email
         values.put(KEY_PASSWORD, password); // Password
+        values.put(KEY_COOKIE, "cookie"); // Cookie Placeholder
 
         // Inserting Row
         db.insert(TABLE_LOGIN, null, values);
@@ -82,6 +85,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             user.put("site_url", cursor.getString(1));
             user.put("email", cursor.getString(2));
             user.put("password", cursor.getString(3));
+            user.put("cookie", cursor.getString(4));
         }
         cursor.close();
         db.close();
