@@ -8,6 +8,10 @@
 /gen/*
 /local.properties
 
+*/target
+target
+
+
 
 # OS generated files #
 .DS_Store
