@@ -6,7 +6,15 @@ An android app geared at viewing stickies and projects from Task Tracker on your
 
 Requires the android-sdk: http://developer.android.com/sdk/index.html
 
-  ant debug; adb uninstall com.github.remomueller.tasktracker.android; adb install bin/tasktracker_android-debug.apk
+  ant debug
+
+  adb install -r bin/tasktracker_android-debug.apk
+
+To run the test suite:
+
+  mvn install
+
+  mvn test
 
 == Contributing to Task Tracker - Android
 
