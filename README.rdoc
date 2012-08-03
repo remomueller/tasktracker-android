@@ -1,4 +1,4 @@
-= Task Tracker - Android
+= Task Tracker - Android {<img src="https://secure.travis-ci.org/remomueller/tasktracker-android.png"/>}[http://travis-ci.org/remomueller/tasktracker-android]
 
 An android app geared at viewing stickies and projects from Task Tracker on your mobile device.
 
