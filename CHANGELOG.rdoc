@@ -1,4 +1,4 @@
-== 0.0.1 (unreleased)
+== 0.0.1
 
 * Bug Fix
   * Fixed crash on login that occurred on devices running Honeycomb, Icecream Sandwich or Jelly Bean
