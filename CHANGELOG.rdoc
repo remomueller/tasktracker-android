@@ -1,5 +1,8 @@
 == 0.0.1 (unreleased)
 
+* Bug Fix
+  * Fixed crash on login that occurred on devices running Honeycomb, Icecream Sandwich or Jelly Bean
+
 == 0.0.0
 
 * Initial implementation that allows a user to sign in and view a list of past due stickies
