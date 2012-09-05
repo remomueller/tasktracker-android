@@ -4,6 +4,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 // import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,8 @@ import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import android.widget.Toast;
 
 // From libs directory
 import org.apache.commons.io.IOUtils;
@@ -77,6 +80,28 @@ public class StickiesIndex extends SherlockActivity {
         inflater.inflate(R.menu.main_menu, menu);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.projects:
+                intent = new Intent(getApplicationContext(), ProjectsIndex.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                return true;
+            case R.id.stickies:
+                intent = new Intent(getApplicationContext(), StickiesIndex.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -161,7 +186,7 @@ public class StickiesIndex extends SherlockActivity {
             try {
                 return getStickiesJSON();
             } catch (IOException e) {
-                return "Login Failed: Please make sure your email and password are correct.";
+                return "Unable to Connect: Make sure you have an active network connection.";
             }
         }
         // onPostExecute displays the results of the AsyncTask.

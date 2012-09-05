@@ -2,6 +2,7 @@
 
 * Enhancements
   * ActionBar added using ActionBarSherlock
+  * Projects can now be viewed
 
 == 0.0.1
 
