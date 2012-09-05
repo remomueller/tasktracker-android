@@ -2,7 +2,7 @@
 
 An android app geared at viewing stickies and projects from Task Tracker on your mobile device.
 
-{<img style="vertical-align: middle;" title="Task Tracker" src="https://raw.github.com/remomueller/tasktracker-android/master/art/ic_launcher.png" alt="" width="72" height="72" /> <img style="vertical-align: middle;" src="http://www.android.com/images/brand/android_app_on_play_logo_large.png" alt="Android app on Google Play" width="172" height="60" />}[http://play.google.com/store/apps/details?id=com.github.remomueller.tasktracker.android]
+{<img style="vertical-align: middle;" title="Task Tracker" src="https://raw.github.com/remomueller/tasktracker-android/master/art/hdpi/ic_launcher.png" alt="" width="60" height="60" /> <img style="vertical-align: middle;" src="http://www.android.com/images/brand/android_app_on_play_logo_large.png" alt="Android app on Google Play" width="172" height="60" />}[http://play.google.com/store/apps/details?id=com.github.remomueller.tasktracker.android]
 
 == Development
 
