@@ -1,5 +1,8 @@
 == 0.1.0 (unreleased)
 
+* Enhancements
+  * ActionBar added using ActionBarSherlock
+
 == 0.0.1
 
 * Bug Fix

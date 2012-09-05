@@ -8,6 +8,42 @@ An android app geared at viewing stickies and projects from Task Tracker on your
 
 Requires the android-sdk: http://developer.android.com/sdk/index.html
 
+Create a Source Folder
+
+  mkdir ~/code
+  mkdir ~/code/source
+
+Install ActionBarSherlock: http://actionbarsherlock.com/download.html
+
+  cd ~/code/source
+  wget https://github.com/JakeWharton/ActionBarSherlock/tarball/4.1.0 -O ActionBarSherlock-v4.1.0.tar.gz
+  tar xvzf ActionBarSherlock-v4.1.0.tar.gz
+  mv JakeWharton-ActionBarSherlock* ActionBarSherlock-v4.1.0
+  rm ActionBarSherlock-v4.1.0.tar.gz
+  cd ActionBarSherlock-v4.1.0
+
+Open the project properties
+
+  vi library/project.properties
+
+Modify to target android version to:
+
+  target=android-16
+
+Update the project
+
+  android update project -p library
+
+Clone the Git Repository
+
+  cd ~/code/source
+
+  git clone https://github.com/remomueller/tasktracker-android.git
+
+  cd tasktracker-android
+
+Compile and Install
+
   ant debug
 
   adb install -r bin/tasktracker_android-debug.apk
