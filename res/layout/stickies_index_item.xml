@@ -24,7 +24,7 @@
         android:layout_below="@id/sticky_id"
         android:layout_toLeftOf="@+id/single_tag"
         android:textColor="#2C2C2C"
-        android:textSize="10dip"
+        android:textSize="25dip"
         android:layout_marginTop="1dip" />
 
     <!-- Sticky Due Date -->
@@ -52,7 +52,7 @@
         android:paddingRight="4px"
         android:paddingTop="1px"
         android:paddingBottom="2px"
-        android:textSize="10dip"
+        android:textSize="18dip"
         android:textStyle="bold"
         android:shadowDx="1.2"
         android:shadowColor="#333"
