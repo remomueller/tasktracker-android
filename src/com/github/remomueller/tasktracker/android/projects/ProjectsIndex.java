@@ -1,5 +1,6 @@
 package com.github.remomueller.tasktracker.android;
 
+
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuInflater;
@@ -71,6 +72,13 @@ public class ProjectsIndex extends SherlockActivity {
                 return true;
             case R.id.stickies:
                 intent = new Intent(getApplicationContext(), StickiesIndex.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                return true;
+            case R.id.logout:
+                userFunctionsGSON.logoutUser(getApplicationContext());
+                intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();

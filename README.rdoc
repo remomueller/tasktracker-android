@@ -8,10 +8,14 @@ An android app geared at viewing stickies and projects from Task Tracker on your
 
 Requires the android-sdk: http://developer.android.com/sdk/index.html
 
+=== Initialize Development Environment
+
 Create a Source Folder
 
   mkdir ~/code
   mkdir ~/code/source
+
+=== ActionBarSherlock
 
 Install ActionBarSherlock: http://actionbarsherlock.com/download.html
 
@@ -33,6 +37,31 @@ Modify to target android version to:
 Update the project
 
   android update project -p library
+
+=== ViewPageIndicator
+
+Install ViewPageIndicator: https://github.com/JakeWharton/Android-ViewPagerIndicator
+
+  cd ~/code/source
+  wget https://github.com/JakeWharton/Android-ViewPagerIndicator/tarball/2.3.1 -O ViewPagerIndicator-v2.3.1.tar.gz
+  tar xvzf ViewPagerIndicator-v2.3.1.tar.gz
+  mv JakeWharton-Android-ViewPagerIndicator* ViewPagerIndicator-v2.3.1
+  rm ViewPagerIndicator-v2.3.1.tar.gz
+  cd ViewPagerIndicator-v2.3.1
+
+Open the project properties
+
+  vi library/project.properties
+
+Modify to target android version to:
+
+  target=android-16
+
+Update the project
+
+  android update project -p library
+
+=== Task Tracker Android
 
 Clone the Git Repository
 

@@ -3,6 +3,7 @@
 * Enhancements
   * ActionBar added using ActionBarSherlock
   * Projects can now be viewed
+  * Stickies are now split into Recently Completed, Past Due, and Upcoming
 
 == 0.0.1
 

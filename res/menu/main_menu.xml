@@ -6,6 +6,9 @@
     <item android:id="@+id/stickies"
           android:title="Stickies"
           android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/logout"
+          android:title="Logout"
+          android:showAsAction="never"/>
 </menu>
 
 <!--

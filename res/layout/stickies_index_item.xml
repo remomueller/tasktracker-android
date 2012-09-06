@@ -37,7 +37,7 @@
         android:textColor="#2C2C2C"
         android:gravity="right"
         android:layout_marginRight="5dip"
-        android:textSize="10dip"
+        android:textSize="15dip"
         android:textStyle="bold" />
 
     <TextView
