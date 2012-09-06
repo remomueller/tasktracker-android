@@ -91,6 +91,44 @@ public class TestFragment extends SherlockFragment {
         super.onActivityCreated(savedInstanceState);
 
         list.setAdapter(stickyAdapter);
+
+        list.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Sticky sticky = stickies.get(position);
+
+                String text = stickies.get(position).id + ": " + stickies.get(position).description;
+
+
+                Intent intent = new Intent(getActivity(), StickiesShow.class);
+
+                intent.putExtra(STICKY_POSITION, Integer.toString(position));
+                intent.putExtra(STICKY_ID, Integer.toString(sticky.id));
+                intent.putExtra(STICKY_DESCRIPTION, sticky.description);
+                intent.putExtra(STICKY_GROUP_DESCRIPTION, sticky.group_description);
+                intent.putExtra(STICKY_DUE_DATE, sticky.due_date);
+                intent.putExtra(STICKY_COMPLETED, Boolean.toString(sticky.completed));
+
+                String tag_id = "0";
+                String tag_name = "";
+                String tag_color = "#80FFFFFF";
+
+                for(int i = 0; i < sticky.tags.length; i++){
+                    if(i == 0){
+                        tag_id = Integer.toString(sticky.tags[i].id);
+                        tag_name = sticky.tags[i].name;
+                        tag_color = sticky.tags[i].color;
+                    }
+                }
+
+                intent.putExtra(TAG_ID, tag_id);
+                intent.putExtra(TAG_NAME, tag_name);
+                intent.putExtra(TAG_COLOR, tag_color);
+
+                startActivity(intent);
+            }
+
+        });
+
     }
 
 
