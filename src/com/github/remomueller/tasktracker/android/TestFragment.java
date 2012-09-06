@@ -81,6 +81,8 @@ public class TestFragment extends SherlockFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stickies_index, container, false);
         list=(ListView)view.findViewById(R.id.stickies_list);
+
+        stickyAdapter = new StickyAdapter(getActivity(), stickies);
         return view;
     }
 
@@ -88,7 +90,6 @@ public class TestFragment extends SherlockFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        stickyAdapter = new StickyAdapter(getActivity(), stickies);
         list.setAdapter(stickyAdapter);
     }
 
@@ -126,7 +127,9 @@ public class TestFragment extends SherlockFragment {
                 stickies.add(stickies_array[i]);
             }
 
-            stickyAdapter.notifyDataSetChanged();
+            if(stickyAdapter != null){
+                stickyAdapter.notifyDataSetChanged();
+            }
        }
     }
 
