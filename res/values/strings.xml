@@ -10,6 +10,7 @@
 
     <string name="stickies_index">Stickies</string>
     <string name="stickies_show">Sticky</string>
+    <string name="stickies_new">New Sticky</string>
 
     <string name="projects_index">Projects</string>
     <string name="projects_show">Project</string>

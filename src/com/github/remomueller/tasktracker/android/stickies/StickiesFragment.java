@@ -186,12 +186,17 @@ public class StickiesFragment extends SherlockFragment {
         String params = "";
 
         if(location == 0) { // Completed
-            params = "status[]=completed&owner_id=me&order=stickies.due_date+DESC&due_date_end_date="+due_date_today;
+            params = "status[]=completed&order=stickies.due_date+DESC&due_date_end_date="+due_date_today;
         }else if(location == 2) { // Upcoming
-            params = "status[]=planned&owner_id=me&order=stickies.due_date+ASC&due_date_start_date="+due_date_tomorrow;
+            params = "status[]=planned&order=stickies.due_date+ASC&due_date_start_date="+due_date_tomorrow;
         }else{ // Past Due
-            params = "status[]=planned&owner_id=me&order=stickies.due_date+DESC&due_date_end_date="+due_date_today;
+            params = "status[]=planned&order=stickies.due_date+DESC&due_date_end_date="+due_date_today;
         }
+
+        // TODO: Allow user to set preference from 2. View Control
+        // http://developer.android.com/design/patterns/actionbar.html
+        if(true)
+            params = params + "&owner_id=me";
 
         // Filter by project if project is selected
         if(current_project != null && current_project.id > 0)
@@ -204,7 +209,8 @@ public class StickiesFragment extends SherlockFragment {
         conn.setRequestMethod("GET"); /* Can be POST */
         conn.setDoInput(true);
         conn.setRequestProperty("Accept-Charset", "UTF-8");
-        conn.setRequestProperty("Content-Type", "application/json");
+        // conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         conn.setRequestProperty("WWW-Authenticate", "Basic realm='Application'");
 
 

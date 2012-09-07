@@ -58,6 +58,12 @@
             android:value="com.github.remomueller.tasktracker.android.stickies.StickiesIndex" />
         </activity>
 
+        <activity android:name=".StickiesNew"
+                  android:label="@string/stickies_new" >
+          <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.github.remomueller.tasktracker.android.stickies.StickiesIndex" />
+        </activity>
 
         <activity android:name=".ProjectsIndex"
                   android:label="@string/projects_index" >

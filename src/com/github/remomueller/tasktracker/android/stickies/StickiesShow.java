@@ -13,7 +13,7 @@ public class StickiesShow extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.sticky_show);
+        setContentView(R.layout.stickies_show);
 
         // Get the message from the intent
         Intent intent = getIntent();

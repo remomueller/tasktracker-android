@@ -5,6 +5,7 @@
   * Projects can now be viewed
     * Selecting a project will filter the list of stickies to that project
   * Stickies are now split into Completed, Past Due, and Upcoming
+  * Stickies can be created by selecting a project, then adding a new sticky from the options menu
 
 == 0.0.1
 

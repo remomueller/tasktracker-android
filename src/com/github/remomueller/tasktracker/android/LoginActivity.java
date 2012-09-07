@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -180,8 +181,9 @@ public class LoginActivity extends Activity {
 
                 finish();
             }else{
-                Toast.makeText(getApplicationContext(), "Login Failed: Incorrect email or password!", Toast.LENGTH_LONG).show();
-            //     loginErrorMsg.setText("Incorrect username/password");
+                Toast toast = Toast.makeText(getApplicationContext(), "Login Failed: Incorrect email or password!", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
             }
        }
     }

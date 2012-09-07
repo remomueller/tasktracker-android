@@ -169,14 +169,15 @@ public class ProjectsIndex extends SherlockActivity {
         String password = current_user.getPassword(getApplicationContext());
         String site_url = current_user.getSiteURL(getApplicationContext());
 
-        URL url = new URL(site_url + "/projects.json?search=");
+        URL url = new URL(site_url + "/projects.json");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000 /* milliseconds */);
         conn.setConnectTimeout(15000 /* milliseconds */);
         conn.setRequestMethod("GET"); /* Can be POST */
         conn.setDoInput(true);
         conn.setRequestProperty("Accept-Charset", "UTF-8");
-        conn.setRequestProperty("Content-Type", "application/json");
+        // conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         conn.setRequestProperty("WWW-Authenticate", "Basic realm='Application'");
 
 

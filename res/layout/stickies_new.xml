@@ -1,0 +1,79 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#3b3b3b" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dip" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip"
+            android:text="Sticky Description" />
+
+        <!--  Sticky Description -->
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+
+        <!--  Due Date Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Due Date" />
+
+        <TextView android:id="@+id/due_date_show"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button android:id="@+id/due_date_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Choose Date"/>
+
+        <!--  Project Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Project" />
+
+        <TextView
+            android:id="@+id/project_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Due Date" />
+
+<!-- TODO Select Project List here... -->
+<!--         <TextView android:id="@+id/project_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+ -->
+
+        <!--  Create Sticky Button -->
+        <Button
+            android:id="@+id/sticky_create"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dip"
+            android:text="Create Sticky"
+            android:textColor="#ffffff"
+            android:textSize="25dip"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
+            android:paddingTop="5dip"
+            android:paddingBottom="5dip"
+            android:background="@drawable/btn_primary" />
+
+
+    </LinearLayout>
+</ScrollView>
+
+<!-- android:singleLine="true"               -->
+<!-- android:nextFocusDown="@+id/loginEmail" -->

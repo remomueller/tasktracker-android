@@ -79,6 +79,16 @@ public class StickiesIndex extends SherlockFragmentActivity {
                 startActivity(intent);
                 finish();
                 return true;
+            case R.id.new_sticky:
+                intent = new Intent(getApplicationContext(), StickiesNew.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                if(current_project != null){
+                    intent.putExtra(Project.PROJECT_ID, Integer.toString(current_project.id));
+                    intent.putExtra(Project.PROJECT_NAME, current_project.name);
+                }
+                startActivity(intent);
+                // finish();
+                return true;
             case R.id.logout:
                 current_user.logoutUser(getApplicationContext());
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -129,6 +139,7 @@ public class StickiesIndex extends SherlockFragmentActivity {
 
     class StickiesFragmentAdapter extends FragmentPagerAdapter {
         private int mCount = CONTENT.length;
+
 
         public StickiesFragmentAdapter(FragmentManager fm) {
             super(fm);

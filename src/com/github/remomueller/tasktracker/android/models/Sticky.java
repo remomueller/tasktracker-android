@@ -13,6 +13,7 @@ public class Sticky {
     public int id;
     public String description;
     public String due_date;
+    public int project_id;
 
     public String group_description;
 
