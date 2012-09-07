@@ -34,7 +34,6 @@ import com.google.gson.JsonParseException;
 
 
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
-import com.github.remomueller.tasktracker.android.util.UserFunctionsGSON;
 import com.github.remomueller.tasktracker.android.util.Base64;
 
 public class LoginActivity extends Activity {
@@ -168,11 +167,11 @@ public class LoginActivity extends Activity {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                UserFunctionsGSON userFunctionsGSON = new UserFunctionsGSON();
+                User current_user = new User();
                 DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
                 // Clear all previous data in database
-                userFunctionsGSON.logoutUser(getApplicationContext());
+                current_user.logoutUser(getApplicationContext());
                 db.addUser(site_url, email, password);
 
                 Intent intent = new Intent(getApplicationContext(), StickiesIndex.class);

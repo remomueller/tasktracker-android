@@ -21,39 +21,15 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.HttpURLConnection;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-
-import android.widget.Toast;
-
-// From libs directory
-import org.apache.commons.io.IOUtils;
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
-
-import com.github.remomueller.tasktracker.android.util.Base64;
-import com.github.remomueller.tasktracker.android.util.UserFunctionsGSON;
 
 
 public class StickiesIndex extends SherlockFragmentActivity {
     private static final String TAG = "TaskTrackerAndroid";
 
-    private static final String[] CONTENT = new String[] { "Recently Completed", "Past Due", "Upcoming" };
+    private static final String[] CONTENT = new String[] { "Completed", "Past Due", "Upcoming" };
 
 
     TestFragmentAdapter mAdapter;
@@ -75,7 +51,7 @@ public class StickiesIndex extends SherlockFragmentActivity {
     public final static String TAG_COLOR = "com.github.remomueller.tasktracker.android.stickies.TAG_COLOR";
 
 
-    UserFunctionsGSON userFunctionsGSON;
+    User current_user;
 
     StickyAdapter stickyAdapter;
     ListView list;
@@ -112,7 +88,7 @@ public class StickiesIndex extends SherlockFragmentActivity {
                 finish();
                 return true;
             case R.id.logout:
-                userFunctionsGSON.logoutUser(getApplicationContext());
+                current_user.logoutUser(getApplicationContext());
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -129,7 +105,7 @@ public class StickiesIndex extends SherlockFragmentActivity {
 
         actionBar = getSupportActionBar();
 
-        userFunctionsGSON = new UserFunctionsGSON();
+        current_user = new User();
 
         setContentView(R.layout.simple_tabs);
 

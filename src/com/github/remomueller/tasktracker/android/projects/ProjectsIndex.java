@@ -37,7 +37,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
 import com.github.remomueller.tasktracker.android.util.Base64;
-import com.github.remomueller.tasktracker.android.util.UserFunctionsGSON;
 
 public class ProjectsIndex extends SherlockActivity {
     private static final String TAG = "TaskTrackerAndroid";
@@ -48,8 +47,6 @@ public class ProjectsIndex extends SherlockActivity {
 
     public ArrayList<Project> projects = new ArrayList<Project>();
     ProjectAdapter projectAdapter;
-
-    UserFunctionsGSON userFunctionsGSON;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -77,7 +74,8 @@ public class ProjectsIndex extends SherlockActivity {
                 finish();
                 return true;
             case R.id.logout:
-                userFunctionsGSON.logoutUser(getApplicationContext());
+                User current_user = new User();
+                current_user.logoutUser(getApplicationContext());
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -101,7 +99,6 @@ public class ProjectsIndex extends SherlockActivity {
         projectAdapter = new ProjectAdapter(this, projects);
         list.setAdapter(projectAdapter);
 
-        userFunctionsGSON = new UserFunctionsGSON();
         new GetProjects().execute(MainActivity.HOST_URL);
 
     }
@@ -155,9 +152,10 @@ public class ProjectsIndex extends SherlockActivity {
         String s = formatter.format(date);
         String due_date_end_date = s;
 
-        String email = userFunctionsGSON.getEmail(getApplicationContext());
-        String password = userFunctionsGSON.getPassword(getApplicationContext());
-        String site_url = userFunctionsGSON.getSiteURL(getApplicationContext());
+        User current_user = new User();
+        String email = current_user.getEmail(getApplicationContext());
+        String password = current_user.getPassword(getApplicationContext());
+        String site_url = current_user.getSiteURL(getApplicationContext());
 
         URL url = new URL(site_url + "/projects.json?search=");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();

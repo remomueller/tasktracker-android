@@ -1,4 +1,4 @@
-package com.github.remomueller.tasktracker.android.util;
+package com.github.remomueller.tasktracker.android;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,13 @@ import java.util.HashMap;
 import android.content.Context;
 import android.util.Log;
 
+import com.github.remomueller.tasktracker.android.util.Base64;
+import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 
-public class UserFunctionsGSON {
+public class User {
 
     // constructor
-    public UserFunctionsGSON(){
+    public User(){
 
     }
 

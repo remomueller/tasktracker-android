@@ -29,6 +29,7 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import android.widget.Toast;
@@ -39,7 +40,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
 import com.github.remomueller.tasktracker.android.util.Base64;
-import com.github.remomueller.tasktracker.android.util.UserFunctionsGSON;
 
 public class TestFragment extends SherlockFragment {
     private static final String TAG = "TaskTrackerAndroid";
@@ -58,8 +58,6 @@ public class TestFragment extends SherlockFragment {
     public final static String TAG_NAME = "com.github.remomueller.tasktracker.android.stickies.TAG_NAME";
     public final static String TAG_COLOR = "com.github.remomueller.tasktracker.android.stickies.TAG_COLOR";
 
-    UserFunctionsGSON userFunctionsGSON;
-
     public ArrayList<Sticky> stickies = new ArrayList<Sticky>();
     StickyAdapter stickyAdapter;
 
@@ -72,8 +70,7 @@ public class TestFragment extends SherlockFragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
-        userFunctionsGSON = new UserFunctionsGSON();
+        this.setRetainInstance(true);
         new DownloadJSONSTickies().execute(Integer.toString(position));
     }
 
@@ -176,28 +173,34 @@ public class TestFragment extends SherlockFragment {
       int len = 1000;
 
       try {
-        Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-        String s = formatter.format(date);
-        String due_date_end_date = s;
+        Date today = new Date();
 
-        String email = userFunctionsGSON.getEmail(getActivity().getApplicationContext());
-        String password = userFunctionsGSON.getPassword(getActivity().getApplicationContext());
-        String site_url = userFunctionsGSON.getSiteURL(getActivity().getApplicationContext());
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        c.add(Calendar.DATE, 1);
+        Date tomorrow = c.getTime();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        String due_date_today = formatter.format(today);
+        String due_date_tomorrow = formatter.format(tomorrow);
+
+
+
+        User current_user = new User();
+        String email = current_user.getEmail(getActivity().getApplicationContext());
+        String password = current_user.getPassword(getActivity().getApplicationContext());
+        String site_url = current_user.getSiteURL(getActivity().getApplicationContext());
 
         String params = "";
 
         Log.d(TAG, "Location '" + location + "'");
 
-        if(location == 0) { // Recently Completed
-            Log.d(TAG, "Recently Completed");
-            params = "status[]=completed&owner_id=me&order=stickies.due_date+DESC&due_date_end_date="+due_date_end_date;
+        if(location == 0) { // Completed
+            params = "status[]=completed&owner_id=me&order=stickies.due_date+DESC&due_date_end_date="+due_date_today;
         }else if(location == 2) { // Upcoming
-            Log.d(TAG, "Upcoming");
-            params = "status[]=planned&owner_id=me&order=stickies.due_date+ASC&due_date_start_date="+due_date_end_date;
+            params = "status[]=planned&owner_id=me&order=stickies.due_date+ASC&due_date_start_date="+due_date_tomorrow;
         }else{ // Past Due
-            Log.d(TAG, "Past Due");
-            params = "status[]=planned&owner_id=me&order=stickies.due_date+DESC&due_date_end_date="+due_date_end_date;
+            params = "status[]=planned&owner_id=me&order=stickies.due_date+DESC&due_date_end_date="+due_date_today;
         }
 
         URL url = new URL(site_url + "/stickies.json?" + params);

@@ -7,10 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.github.remomueller.tasktracker.android.util.UserFunctionsGSON;
-
 public class DashboardActivity extends Activity {
-    UserFunctionsGSON userFunctionsGSON;
+    User current_user;
     Button btnLogout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -20,8 +18,8 @@ public class DashboardActivity extends Activity {
          * Dashboard Screen for the application
          * */
         // Check login status in database
-        userFunctionsGSON = new UserFunctionsGSON();
-        if(userFunctionsGSON.isUserLoggedIn(getApplicationContext())){
+        current_user = new User();
+        if(current_user.isUserLoggedIn(getApplicationContext())){
 
             Intent intent = new Intent(getApplicationContext(), StickiesIndex.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -36,7 +34,7 @@ public class DashboardActivity extends Activity {
 
        //          public void onClick(View arg0) {
        //              // TODO Auto-generated method stub
-       //              userFunctionsGSON.logoutUser(getApplicationContext());
+       //              current_user.logoutUser(getApplicationContext());
        //              Intent login = new Intent(getApplicationContext(), LoginActivity.class);
        //              login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
        //              startActivity(login);
