@@ -16,7 +16,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-import android.content.Context;
+// import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,23 +32,12 @@ public class StickiesIndex extends SherlockFragmentActivity {
     private static final String[] CONTENT = new String[] { "Completed", "Past Due", "Upcoming" };
 
 
-    TestFragmentAdapter mAdapter;
+    StickiesFragmentAdapter mAdapter;
     ViewPager mPager;
     PageIndicator mIndicator;
 
 
     public ArrayList<Sticky> stickies = new ArrayList<Sticky>();
-
-    public final static String STICKY_POSITION = "com.github.remomueller.tasktracker.android.stickies.STICKY_POSITION";
-    public final static String STICKY_ID = "com.github.remomueller.tasktracker.android.stickies.STICKY_ID";
-    public final static String STICKY_DESCRIPTION = "com.github.remomueller.tasktracker.android.stickies.STICKY_DESCRIPTION";
-    public final static String STICKY_GROUP_DESCRIPTION = "com.github.remomueller.tasktracker.android.stickies.STICKY_GROUP_DESCRIPTION";
-    public final static String STICKY_DUE_DATE = "com.github.remomueller.tasktracker.android.stickies.STICKY_DUE_DATE";
-    public final static String STICKY_COMPLETED = "com.github.remomueller.tasktracker.android.stickies.STICKY_COMPLETED";
-
-    public final static String TAG_ID = "com.github.remomueller.tasktracker.android.stickies.TAG_ID";
-    public final static String TAG_NAME = "com.github.remomueller.tasktracker.android.stickies.TAG_NAME";
-    public final static String TAG_COLOR = "com.github.remomueller.tasktracker.android.stickies.TAG_COLOR";
 
 
     User current_user;
@@ -109,7 +98,7 @@ public class StickiesIndex extends SherlockFragmentActivity {
 
         setContentView(R.layout.simple_tabs);
 
-        mAdapter = new TestFragmentAdapter(getSupportFragmentManager());
+        mAdapter = new StickiesFragmentAdapter(getSupportFragmentManager());
 
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
@@ -122,16 +111,16 @@ public class StickiesIndex extends SherlockFragmentActivity {
 
     }
 
-    class TestFragmentAdapter extends FragmentPagerAdapter {
+    class StickiesFragmentAdapter extends FragmentPagerAdapter {
         private int mCount = CONTENT.length;
 
-        public TestFragmentAdapter(FragmentManager fm) {
+        public StickiesFragmentAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
-            return TestFragment.newInstance(position);
+            return StickiesFragment.newInstance(position);
         }
 
         @Override

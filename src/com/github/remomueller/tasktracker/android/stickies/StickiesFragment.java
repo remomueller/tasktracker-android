@@ -41,28 +41,17 @@ import com.google.gson.JsonParseException;
 
 import com.github.remomueller.tasktracker.android.util.Base64;
 
-public class TestFragment extends SherlockFragment {
+public class StickiesFragment extends SherlockFragment {
     private static final String TAG = "TaskTrackerAndroid";
 
     private int position = -1;
     ListView list;
 
-    public final static String STICKY_POSITION = "com.github.remomueller.tasktracker.android.stickies.STICKY_POSITION";
-    public final static String STICKY_ID = "com.github.remomueller.tasktracker.android.stickies.STICKY_ID";
-    public final static String STICKY_DESCRIPTION = "com.github.remomueller.tasktracker.android.stickies.STICKY_DESCRIPTION";
-    public final static String STICKY_GROUP_DESCRIPTION = "com.github.remomueller.tasktracker.android.stickies.STICKY_GROUP_DESCRIPTION";
-    public final static String STICKY_DUE_DATE = "com.github.remomueller.tasktracker.android.stickies.STICKY_DUE_DATE";
-    public final static String STICKY_COMPLETED = "com.github.remomueller.tasktracker.android.stickies.STICKY_COMPLETED";
-
-    public final static String TAG_ID = "com.github.remomueller.tasktracker.android.stickies.TAG_ID";
-    public final static String TAG_NAME = "com.github.remomueller.tasktracker.android.stickies.TAG_NAME";
-    public final static String TAG_COLOR = "com.github.remomueller.tasktracker.android.stickies.TAG_COLOR";
-
     public ArrayList<Sticky> stickies = new ArrayList<Sticky>();
     StickyAdapter stickyAdapter;
 
-    public static TestFragment newInstance(int location) {
-        TestFragment fragment = new TestFragment();
+    public static StickiesFragment newInstance(int location) {
+        StickiesFragment fragment = new StickiesFragment();
         fragment.position = location;
         return fragment;
     }
@@ -98,12 +87,12 @@ public class TestFragment extends SherlockFragment {
 
                 Intent intent = new Intent(getActivity(), StickiesShow.class);
 
-                intent.putExtra(STICKY_POSITION, Integer.toString(position));
-                intent.putExtra(STICKY_ID, Integer.toString(sticky.id));
-                intent.putExtra(STICKY_DESCRIPTION, sticky.description);
-                intent.putExtra(STICKY_GROUP_DESCRIPTION, sticky.group_description);
-                intent.putExtra(STICKY_DUE_DATE, sticky.due_date);
-                intent.putExtra(STICKY_COMPLETED, Boolean.toString(sticky.completed));
+                intent.putExtra(Sticky.STICKY_POSITION, Integer.toString(position));
+                intent.putExtra(Sticky.STICKY_ID, Integer.toString(sticky.id));
+                intent.putExtra(Sticky.STICKY_DESCRIPTION, sticky.description);
+                intent.putExtra(Sticky.STICKY_GROUP_DESCRIPTION, sticky.group_description);
+                intent.putExtra(Sticky.STICKY_DUE_DATE, sticky.due_date);
+                intent.putExtra(Sticky.STICKY_COMPLETED, Boolean.toString(sticky.completed));
 
                 String tag_id = "0";
                 String tag_name = "";
@@ -117,9 +106,9 @@ public class TestFragment extends SherlockFragment {
                     }
                 }
 
-                intent.putExtra(TAG_ID, tag_id);
-                intent.putExtra(TAG_NAME, tag_name);
-                intent.putExtra(TAG_COLOR, tag_color);
+                intent.putExtra(Tag.TAG_ID, tag_id);
+                intent.putExtra(Tag.TAG_NAME, tag_name);
+                intent.putExtra(Tag.TAG_COLOR, tag_color);
 
                 startActivity(intent);
             }

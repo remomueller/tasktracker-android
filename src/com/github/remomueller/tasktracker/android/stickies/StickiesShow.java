@@ -18,21 +18,21 @@ public class StickiesShow extends Activity {
         // Get the message from the intent
         Intent intent = getIntent();
 
-        int position = Integer.parseInt( intent.getStringExtra(StickiesIndex.STICKY_POSITION) );
+        int position = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_POSITION) );
 
         // Hopefully won't be needed in future and can access from database
         Sticky sticky = new Sticky();
-        sticky.id = Integer.parseInt( intent.getStringExtra(StickiesIndex.STICKY_ID) );
-        sticky.description = intent.getStringExtra(StickiesIndex.STICKY_DESCRIPTION);
-        sticky.group_description = intent.getStringExtra(StickiesIndex.STICKY_GROUP_DESCRIPTION);
-        sticky.due_date = intent.getStringExtra(StickiesIndex.STICKY_DUE_DATE);
-        sticky.completed = Boolean.parseBoolean(intent.getStringExtra(StickiesIndex.STICKY_COMPLETED));
+        sticky.id = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) );
+        sticky.description = intent.getStringExtra(Sticky.STICKY_DESCRIPTION);
+        sticky.group_description = intent.getStringExtra(Sticky.STICKY_GROUP_DESCRIPTION);
+        sticky.due_date = intent.getStringExtra(Sticky.STICKY_DUE_DATE);
+        sticky.completed = Boolean.parseBoolean(intent.getStringExtra(Sticky.STICKY_COMPLETED));
 
         // Hopefully won't be needed in future and can access from database
         Tag tag = new Tag();
-        tag.id = Integer.parseInt( intent.getStringExtra(StickiesIndex.TAG_ID) );
-        tag.name = intent.getStringExtra(StickiesIndex.TAG_NAME);
-        tag.color = intent.getStringExtra(StickiesIndex.TAG_COLOR);
+        tag.id = Integer.parseInt( intent.getStringExtra(Tag.TAG_ID) );
+        tag.name = intent.getStringExtra(Tag.TAG_NAME);
+        tag.color = intent.getStringExtra(Tag.TAG_COLOR);
 
 
 
