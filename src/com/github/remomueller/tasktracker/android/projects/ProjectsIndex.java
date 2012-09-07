@@ -101,6 +101,18 @@ public class ProjectsIndex extends SherlockActivity {
 
         new GetProjects().execute(MainActivity.HOST_URL);
 
+        list.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Project project = projects.get(position);
+                Intent intent = new Intent(getApplicationContext(), StickiesIndex.class);
+                intent.putExtra(Project.PROJECT_ID, Integer.toString(project.id));
+                intent.putExtra(Project.PROJECT_NAME, project.name);
+                // intent.putExtra(Project.PROJECT_COLOR, project.color);
+                startActivity(intent);
+            }
+
+        });
+
     }
 
     private class GetProjects extends AsyncTask<String, Void, String> {

@@ -45,14 +45,16 @@ public class StickiesFragment extends SherlockFragment {
     private static final String TAG = "TaskTrackerAndroid";
 
     private int position = -1;
+    Project current_project;
     ListView list;
 
     public ArrayList<Sticky> stickies = new ArrayList<Sticky>();
     StickyAdapter stickyAdapter;
 
-    public static StickiesFragment newInstance(int location) {
+    public static StickiesFragment newInstance(int location, Project project) {
         StickiesFragment fragment = new StickiesFragment();
         fragment.position = location;
+        fragment.current_project = project;
         return fragment;
     }
 
@@ -60,7 +62,7 @@ public class StickiesFragment extends SherlockFragment {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         this.setRetainInstance(true);
-        new DownloadJSONSTickies().execute(Integer.toString(position));
+        new GetStickies().execute(Integer.toString(position));
     }
 
     @Override
@@ -118,11 +120,11 @@ public class StickiesFragment extends SherlockFragment {
     }
 
 
-    private class DownloadJSONSTickies extends AsyncTask<String, Void, String> {
+    private class GetStickies extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... tab_page_nums) {
             try {
-                return getStickiesJSON(Integer.parseInt(tab_page_nums[0]));
+                return getStickiesFromDB(Integer.parseInt(tab_page_nums[0]));
             } catch (IOException e) {
                 return "Unable to Connect: Make sure you have an active network connection.";
             }
@@ -157,7 +159,7 @@ public class StickiesFragment extends SherlockFragment {
        }
     }
 
-    private String getStickiesJSON(int location) throws IOException {
+    private String getStickiesFromDB(int location) throws IOException {
       InputStream is = null;
       int len = 1000;
 
@@ -173,16 +175,15 @@ public class StickiesFragment extends SherlockFragment {
         String due_date_today = formatter.format(today);
         String due_date_tomorrow = formatter.format(tomorrow);
 
-
-
         User current_user = new User();
+        if(getActivity() == null){
+            return "";
+        }
         String email = current_user.getEmail(getActivity().getApplicationContext());
         String password = current_user.getPassword(getActivity().getApplicationContext());
         String site_url = current_user.getSiteURL(getActivity().getApplicationContext());
 
         String params = "";
-
-        Log.d(TAG, "Location '" + location + "'");
 
         if(location == 0) { // Completed
             params = "status[]=completed&owner_id=me&order=stickies.due_date+DESC&due_date_end_date="+due_date_today;
@@ -191,6 +192,10 @@ public class StickiesFragment extends SherlockFragment {
         }else{ // Past Due
             params = "status[]=planned&owner_id=me&order=stickies.due_date+DESC&due_date_end_date="+due_date_today;
         }
+
+        // Filter by project if project is selected
+        if(current_project != null && current_project.id > 0)
+            params = params + "&project_id=" + current_project.id;
 
         URL url = new URL(site_url + "/stickies.json?" + params);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();

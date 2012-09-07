@@ -18,6 +18,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 // import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +42,7 @@ public class StickiesIndex extends SherlockFragmentActivity {
 
 
     User current_user;
+    Project current_project;
 
     StickyAdapter stickyAdapter;
     ListView list;
@@ -64,6 +66,7 @@ public class StickiesIndex extends SherlockFragmentActivity {
         // Handle item selection
         Intent intent;
         switch (item.getItemId()) {
+            case android.R.id.home:
             case R.id.projects:
                 intent = new Intent(getApplicationContext(), ProjectsIndex.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -109,6 +112,19 @@ public class StickiesIndex extends SherlockFragmentActivity {
         mIndicator = indicator;
         mIndicator.setCurrentItem(1);
 
+        Intent intent = getIntent();
+        current_project = new Project();
+
+        if(intent.getStringExtra(Project.PROJECT_ID) != null)
+        {
+            current_project.id = Integer.parseInt( intent.getStringExtra(Project.PROJECT_ID) );
+            current_project.name = intent.getStringExtra(Project.PROJECT_NAME);
+            // current_project.color = intent.getStringExtra(Project.PROJECT_COLOR);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(current_project.name);
+            // actionBar.setTextColor(Color.parseColor(current_project.color));
+        }
+
     }
 
     class StickiesFragmentAdapter extends FragmentPagerAdapter {
@@ -120,7 +136,7 @@ public class StickiesIndex extends SherlockFragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return StickiesFragment.newInstance(position);
+            return StickiesFragment.newInstance(position, current_project);
         }
 
         @Override

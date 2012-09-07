@@ -3,6 +3,7 @@
 * Enhancements
   * ActionBar added using ActionBarSherlock
   * Projects can now be viewed
+    * Selecting a project will filter the list of stickies to that project
   * Stickies are now split into Completed, Past Due, and Upcoming
 
 == 0.0.1

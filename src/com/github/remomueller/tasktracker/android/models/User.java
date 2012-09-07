@@ -1,14 +1,12 @@
 package com.github.remomueller.tasktracker.android;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.content.Context;
 import java.util.HashMap;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.github.remomueller.tasktracker.android.util.Base64;
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
+
+// Debug
+import android.util.Log;
 
 public class User {
 

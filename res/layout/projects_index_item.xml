@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textColor="#2C2C2C"
         android:typeface="sans"
-        android:textSize="40dip"
+        android:textSize="22sp"
         android:textStyle="bold" />
 
 </RelativeLayout>
