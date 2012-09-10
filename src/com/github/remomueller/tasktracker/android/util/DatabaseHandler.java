@@ -12,7 +12,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "android_api";
@@ -34,6 +34,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // String CREATE_LOGIN_TABLE = "CREATE TABLE " + TABLE_LOGIN + "("
+        //         + KEY_ID + " INTEGER PRIMARY KEY,"
+        //         + KEY_SITE_URL + " TEXT,"
+        //         + KEY_EMAIL + " TEXT UNIQUE,"
+        //         + KEY_PASSWORD + " TEXT,"
+        //         + KEY_COOKIE + " TEXT" + ")";
+        // db.execSQL(CREATE_LOGIN_TABLE);
+        migration0001(db);
+    }
+
+    // Upgrading database
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if(oldVersion <= 0) oldVersion = 0;
+        for(int i = oldVersion + 1; i <= newVersion; i++){
+            if(i == 1) migration0001(db);
+            if(i == 2) migration0002(db);
+            // Add more migrations here.
+        }
+    }
+
+    private void migration0001(SQLiteDatabase db){
         String CREATE_LOGIN_TABLE = "CREATE TABLE " + TABLE_LOGIN + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_SITE_URL + " TEXT,"
@@ -43,14 +65,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_LOGIN_TABLE);
     }
 
-    // Upgrading database
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN);
-
-        // Create tables again
-        onCreate(db);
+    private void migration0002(SQLiteDatabase db){
+        String CREATE_PROJECTS_TABLE = "CREATE TABLE projects("
+                + "android_id INTEGER PRIMARY KEY,"
+                + "id INTEGER,"
+                + "name STRING,"
+                + "description TEXT,"
+                + "color STRING" + ")";
+        String CREATE_STICKIES_TABLE = "CREATE TABLE stickies("
+                + "android_id INTEGER PRIMARY KEY,"
+                + "id INTEGER,"
+                + "project_id INTEGER,"
+                + "user_id INTEGER,"
+                + "owner_id INTEGER,"
+                + "description TEXT,"
+                + "group_description TEXT,"
+                + "group_id INTEGER,"
+                + "due_date TEXT,"
+                + "completed INTEGER" + ")";
+        String CREATE_TAGS_TABLE = "CREATE TABLE tags("
+                + "android_id INTEGER PRIMARY KEY,"
+                + "id INTEGER,"
+                + "name STRING,"
+                + "description TEXT,"
+                + "color STRING,"
+                + "project_id INTEGER,"
+                + "user_id INTEGER" + ")";
+        String CREATE_STICKIES_TAGS_TABLE = "CREATE TABLE stickies_tags("
+                + "sticky_id INTEGER,"
+                + "tag_id INTEGER" + ")";
+        db.execSQL(CREATE_PROJECTS_TABLE);
+        db.execSQL(CREATE_STICKIES_TABLE);
+        db.execSQL(CREATE_TAGS_TABLE);
+        db.execSQL(CREATE_STICKIES_TAGS_TABLE);
     }
 
     /**
