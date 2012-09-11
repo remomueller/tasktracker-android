@@ -143,15 +143,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /**
      * Storing user details in database
      * */
-    public void addUser(String site_url, String email, String password) {
+    public void addUser(int id, String first_name, String last_name, String email, String password, String site_url, String authentication_token) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put("rowid", "1"); // Always adding into the first row
-        values.put(KEY_SITE_URL, site_url); // Site URL
-        values.put(KEY_EMAIL, email); // Email
+        values.put(KEY_COOKIE, Integer.toString(id)); // Cookie Placeholder
+        // values.put("first_name", first_name); // Put in with migration 3
+        // values.put("last_name", last_name); // Put in with migration 3
+        values.put(KEY_EMAIL, email);
         values.put("password", password); // Password
-        values.put(KEY_COOKIE, "cookie"); // Cookie Placeholder
+        values.put(KEY_SITE_URL, site_url); // Site URL
+        // values.put("authentication_token", authentication_token); // Put in with migration 3
+
 
         db.insertWithOnConflict("login", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
         db.close(); // Closing database connection
@@ -173,6 +177,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             user.put("email", cursor.getString(2));
             user.put("password", cursor.getString(3));
             user.put("cookie", cursor.getString(4));
+            user.put("first_name", ""); // user.put("first_name", cursor.getString(5)); // Put in with migration 3
+            user.put("last_name", ""); // user.put("last_name", cursor.getString(6)); // Put in with migration 3
+            user.put("authentication_token", ""); // user.put("authentication_token", cursor.getString(7)); // Put in with migration 3
         }
         cursor.close();
         db.close();

@@ -19,7 +19,7 @@ public class User {
     public String password;
 
     public String site_url;
-    public String auth_token;
+    public String authentication_token;
 
     private DatabaseHandler db;
 
@@ -36,14 +36,23 @@ public class User {
         password = user.get("password");
 
         site_url = user.get("site_url");
-        auth_token = user.get("auth_token");
+        authentication_token = user.get("authentication_token");
 
-        if(first_name != null) Log.d(TAG, "First Name: " + first_name);
-        if(last_name != null) Log.d(TAG, "Last Name: " + last_name);
-        if(email != null) Log.d(TAG, "Email: " + email);
-        if(site_url != null) Log.d(TAG, "Site URL: " + site_url);
+        // if(first_name != null) Log.d(TAG, "First Name: " + first_name);
+        // if(last_name != null) Log.d(TAG, "Last Name: " + last_name);
+        // if(email != null) Log.d(TAG, "Email: " + email);
+        // if(site_url != null) Log.d(TAG, "Site URL: " + site_url);
     }
 
+
+    public void print(){
+        Log.d(TAG, "USER id: " + Integer.toString(id));
+        if(first_name != null) Log.d(TAG, "USER first_name: " + first_name);
+        if(last_name != null) Log.d(TAG, "USER last_name: " + last_name);
+        if(email != null) Log.d(TAG, "USER email: " + email);
+        if(site_url != null) Log.d(TAG, "USER site_url: " + site_url);
+        if(authentication_token != null) Log.d(TAG, "USER authentication_token: " + authentication_token);
+    }
 
     /**
      * Function get Login status
@@ -64,6 +73,17 @@ public class User {
     public boolean logoutUser(){
         db.resetLogin(email, site_url);
         return true;
+    }
+
+    public String name(){
+        String result = "";
+        if(first_name != null && last_name != null)
+            result = first_name + " " + last_name;
+        else if(first_name != null)
+            result = first_name;
+        else if(last_name != null)
+            result = last_name;
+        return result;
     }
 
 }

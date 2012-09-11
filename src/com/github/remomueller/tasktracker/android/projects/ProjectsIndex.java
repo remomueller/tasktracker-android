@@ -73,6 +73,22 @@ public class ProjectsIndex extends SherlockActivity {
                 startActivity(intent);
                 finish();
                 return true;
+            case R.id.new_sticky:
+                intent = new Intent(getApplicationContext(), StickiesNew.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                // if(current_project != null){
+                //     intent.putExtra(Project.PROJECT_ID, Integer.toString(current_project.id));
+                //     intent.putExtra(Project.PROJECT_NAME, current_project.name);
+                // }
+                startActivity(intent);
+                // finish();
+                return true;
+            case R.id.about:
+                intent = new Intent(getApplicationContext(), AboutActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                // finish();
+                return true;
             case R.id.logout:
                 User current_user = new User(getApplicationContext());
                 current_user.logoutUser();

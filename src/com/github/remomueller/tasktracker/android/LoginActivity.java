@@ -18,12 +18,16 @@ import android.net.Uri; // For Registration Link
 
 import android.os.AsyncTask;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 // import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.net.HttpURLConnection;
 
 import android.widget.Toast;
@@ -131,32 +135,67 @@ public class LoginActivity extends Activity {
             InputStream is = null;
             int len = 1000;
 
+            // InputStream is = null;
+            OutputStreamWriter wr = null;
+            BufferedReader rd = null;
+
+            String contentAsString = "";
+
             try {
 
-                URL url = new URL(site_url + "/stickies.json");
+                String postparams = URLEncoder.encode("user[email]", "UTF-8") + "=" + URLEncoder.encode(email, "UTF-8");
+                postparams += "&" + URLEncoder.encode("user[password]", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
+
+
+                URL url = new URL(site_url + "/users/login.json");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setReadTimeout(10000 /* milliseconds */);
                 conn.setConnectTimeout(15000 /* milliseconds */);
-                conn.setRequestMethod("GET"); /* Can be POST */
-                conn.setDoInput(true);
+                conn.setRequestMethod("POST");
+                conn.setDoOutput(true);
                 conn.setRequestProperty("Accept-Charset", "UTF-8");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("WWW-Authenticate", "Basic realm='Application'");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("Content-Length", "" + Integer.toString(postparams.getBytes().length));
+                // conn.setRequestProperty("WWW-Authenticate", "Basic realm='Application'");
+                conn.setUseCaches(false);
 
-                String decoded = email+":"+password;
-                String encoded = Base64.encodeBytes( decoded.getBytes() );
+                // String decoded = email+":"+password;
+                // String encoded = Base64.encodeBytes( decoded.getBytes() );
 
-                conn.setRequestProperty("Authorization", "Basic "+encoded);
+                // conn.setRequestProperty("Authorization", "Basic "+encoded);
 
                 // Starts the query
-                conn.connect();
+                // conn.connect();
+
+                // int response = conn.getResponseCode();
+
+                wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write(postparams);
+                wr.flush();
 
                 int response = conn.getResponseCode();
+
+                if(response >= 400)
+                    rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                else
+                    rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+
                 Log.d(TAG, "The response is: " + response);
 
                 is = conn.getInputStream();
 
-                authenticated = (response == 200);
+                authenticated = (response == 200 || response == 201);
+
+
+                String line;
+                while ((line = rd.readLine()) != null) {
+                    // Process line...
+                    contentAsString = contentAsString + line;
+                }
+
+
+
                 // Convert the InputStream into a string
                 // String contentAsString = readIt(is);
             } catch (IOException e) {
@@ -170,8 +209,47 @@ public class LoginActivity extends Activity {
                        Log.d(TAG, "IOException: " + e);
                         return false;
                     }
-
                 }
+
+                if (wr != null) {
+                    try {
+                        wr.close();
+                    } catch (IOException e) {
+                       Log.d(TAG, "IOException: " + e);
+                        return false;
+                    }
+                }
+
+                if (rd != null) {
+                    try {
+                        rd.close();
+                    } catch (IOException e) {
+                       Log.d(TAG, "IOException: " + e);
+                        return false;
+                    }
+                }
+
+                // if (is != null) is.close();
+                // if (wr != null) wr.close();
+                // if (rd != null) rd.close();
+            }
+
+            if(authenticated){
+                Gson gson = new Gson();
+
+                User user;
+
+                try {
+                    Log.d(TAG, "JSON RETURNED: " + contentAsString);
+                    String user_json = contentAsString.replaceAll(".*?\\\"user\\\"\\:", "").replaceAll("\\}\\}", "}");
+                    Log.d(TAG, "JSON Substring: " + user_json);
+                    user = gson.fromJson(user_json, User.class);
+                } catch (JsonParseException e) {
+                    user = new User(getApplicationContext());
+                }
+
+                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                db.addUser(user.id, user.first_name, user.last_name, email, password, site_url, user.authentication_token);
             }
 
             return authenticated;
@@ -181,15 +259,9 @@ public class LoginActivity extends Activity {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                User current_user = new User(getApplicationContext());
-                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-
-                db.addUser(site_url, email, password);
-
                 Intent intent = new Intent(getApplicationContext(), StickiesIndex.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-
                 finish();
             }else{
                 Toast toast = Toast.makeText(getApplicationContext(), "Login Failed: Incorrect email or password!", Toast.LENGTH_LONG);

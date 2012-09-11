@@ -69,6 +69,20 @@ public class AboutActivity extends SherlockActivity {
 
         database_tables_tv.setText(tablesString);
 
+        User current_user = new User(getApplicationContext());
+
+        TextView user_name_tv = (TextView) findViewById(R.id.user_name);
+        user_name_tv.setText(current_user.name());
+
+        TextView user_email_tv = (TextView) findViewById(R.id.user_email);
+        if(current_user.email != null) user_email_tv.setText(current_user.email);
+
+        TextView user_id_tv = (TextView) findViewById(R.id.user_id);
+        user_id_tv.setText(Integer.toString(current_user.id));
+
+        TextView user_site_url_tv = (TextView) findViewById(R.id.user_site_url);
+        if(current_user.site_url != null) user_site_url_tv.setText(current_user.site_url);
+
     }
 
 }
