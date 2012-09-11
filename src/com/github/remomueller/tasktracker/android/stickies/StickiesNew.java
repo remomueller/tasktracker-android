@@ -228,10 +228,10 @@ public class StickiesNew extends Activity {
       int len = 1000;
 
       try {
-        User current_user = new User();
-        String email = current_user.getEmail(getApplicationContext());
-        String password = current_user.getPassword(getApplicationContext());
-        String site_url = current_user.getSiteURL(getApplicationContext());
+        User current_user = new User(getApplicationContext());
+        // String email = current_user.getEmail(getApplicationContext());
+        // String password = current_user.getPassword(getApplicationContext());
+        // String site_url = current_user.getSiteURL(getApplicationContext());
 
         // String params = "";
 
@@ -270,7 +270,7 @@ public class StickiesNew extends Activity {
         // conn.connect();
 
 
-        URL url = new URL(site_url + "/stickies.json?" + params);
+        URL url = new URL(current_user.site_url + "/stickies.json?" + params);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000 /* milliseconds */);
         conn.setConnectTimeout(15000 /* milliseconds */);
@@ -285,7 +285,7 @@ public class StickiesNew extends Activity {
         conn.setRequestProperty("WWW-Authenticate", "Basic realm='Application'");
         conn.setUseCaches(false);
 
-        String decoded = email+":"+password;
+        String decoded = current_user.email+":"+current_user.password;
         String encoded = Base64.encodeBytes( decoded.getBytes() );
 
         conn.setRequestProperty("Authorization", "Basic "+encoded);

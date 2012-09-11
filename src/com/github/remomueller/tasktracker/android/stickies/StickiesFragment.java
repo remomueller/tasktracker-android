@@ -175,13 +175,13 @@ public class StickiesFragment extends SherlockFragment {
         String due_date_today = formatter.format(today);
         String due_date_tomorrow = formatter.format(tomorrow);
 
-        User current_user = new User();
         if(getActivity() == null){
             return "";
         }
-        String email = current_user.getEmail(getActivity().getApplicationContext());
-        String password = current_user.getPassword(getActivity().getApplicationContext());
-        String site_url = current_user.getSiteURL(getActivity().getApplicationContext());
+        User current_user = new User(getActivity().getApplicationContext());
+        // String email = current_user.getEmail(getActivity().getApplicationContext());
+        // String password = current_user.getPassword(getActivity().getApplicationContext());
+        // String site_url = current_user.getSiteURL(getActivity().getApplicationContext());
 
         String params = "";
 
@@ -202,7 +202,7 @@ public class StickiesFragment extends SherlockFragment {
         if(current_project != null && current_project.id > 0)
             params = params + "&project_id=" + current_project.id;
 
-        URL url = new URL(site_url + "/stickies.json?" + params);
+        URL url = new URL(current_user.site_url + "/stickies.json?" + params);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000 /* milliseconds */);
         conn.setConnectTimeout(15000 /* milliseconds */);
@@ -214,7 +214,7 @@ public class StickiesFragment extends SherlockFragment {
         conn.setRequestProperty("WWW-Authenticate", "Basic realm='Application'");
 
 
-        String decoded = email+":"+password;
+        String decoded = current_user.email+":"+current_user.password;
         String encoded = Base64.encodeBytes( decoded.getBytes() );
 
         conn.setRequestProperty("Authorization", "Basic "+encoded);

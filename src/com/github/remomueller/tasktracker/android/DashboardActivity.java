@@ -18,7 +18,7 @@ public class DashboardActivity extends Activity {
          * Dashboard Screen for the application
          * */
         // Check login status in database
-        current_user = new User();
+        current_user = new User(getApplicationContext());
         if(current_user.isUserLoggedIn(getApplicationContext())){
 
             Intent intent = new Intent(getApplicationContext(), StickiesIndex.class);

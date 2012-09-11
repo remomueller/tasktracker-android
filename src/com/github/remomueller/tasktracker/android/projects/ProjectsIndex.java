@@ -74,7 +74,7 @@ public class ProjectsIndex extends SherlockActivity {
                 finish();
                 return true;
             case R.id.logout:
-                User current_user = new User();
+                User current_user = new User(getApplicationContext());
                 current_user.logoutUser(getApplicationContext());
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -164,12 +164,13 @@ public class ProjectsIndex extends SherlockActivity {
         String s = formatter.format(date);
         String due_date_end_date = s;
 
-        User current_user = new User();
-        String email = current_user.getEmail(getApplicationContext());
-        String password = current_user.getPassword(getApplicationContext());
-        String site_url = current_user.getSiteURL(getApplicationContext());
+        User current_user = new User(getApplicationContext());
 
-        URL url = new URL(site_url + "/projects.json");
+        // String email = current_user.email;
+        // String password = current_user.password;
+        // String site_url = current_user.site_url;
+
+        URL url = new URL(current_user.site_url + "/projects.json");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000 /* milliseconds */);
         conn.setConnectTimeout(15000 /* milliseconds */);
@@ -181,7 +182,7 @@ public class ProjectsIndex extends SherlockActivity {
         conn.setRequestProperty("WWW-Authenticate", "Basic realm='Application'");
 
 
-        String decoded = email+":"+password;
+        String decoded = current_user.email+":"+current_user.password;
         String encoded = Base64.encodeBytes( decoded.getBytes() );
 
         conn.setRequestProperty("Authorization", "Basic "+encoded);

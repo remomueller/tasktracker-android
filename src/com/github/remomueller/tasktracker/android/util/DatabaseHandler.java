@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
@@ -16,9 +18,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Name
     private static final String DATABASE_NAME = "android_api";
-
-    // Login table name
-    private static final String TABLE_LOGIN = "login";
 
     // Login Table Columns names
     private static final String KEY_ID = "id";
@@ -31,17 +30,33 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    public String getVersion(){
+        return Integer.toString(DATABASE_VERSION);
+    }
+
+    public ArrayList<Object> getTables()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Object> tableList = new ArrayList<Object>();
+        String SQL_GET_ALL_TABLES = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
+        Cursor cursor = db.rawQuery(SQL_GET_ALL_TABLES, null);
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                tableList.add(cursor.getString(0));
+            }
+            while (cursor.moveToNext());
+        }
+        cursor.close();
+        return tableList;
+    }
+
     // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // String CREATE_LOGIN_TABLE = "CREATE TABLE " + TABLE_LOGIN + "("
-        //         + KEY_ID + " INTEGER PRIMARY KEY,"
-        //         + KEY_SITE_URL + " TEXT,"
-        //         + KEY_EMAIL + " TEXT UNIQUE,"
-        //         + KEY_PASSWORD + " TEXT,"
-        //         + KEY_COOKIE + " TEXT" + ")";
-        // db.execSQL(CREATE_LOGIN_TABLE);
         migration0001(db);
+        migration0002(db);
+        // Add more migrations here
     }
 
     // Upgrading database
@@ -51,18 +66,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         for(int i = oldVersion + 1; i <= newVersion; i++){
             if(i == 1) migration0001(db);
             if(i == 2) migration0002(db);
-            // Add more migrations here.
+            // Add more migrations here
+        }
+    }
+
+    @Override
+    public void onDowngrade (SQLiteDatabase db, int oldVersion, int newVersion) {
+        for(int i = oldVersion; i > newVersion; i--){
+            if(i == 1) rollback0001(db);
+            if(i == 2) rollback0002(db);
+            // Add more rollbacks here
         }
     }
 
     private void migration0001(SQLiteDatabase db){
-        String CREATE_LOGIN_TABLE = "CREATE TABLE " + TABLE_LOGIN + "("
+        String CREATE_LOGIN_TABLE = "CREATE TABLE login("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_SITE_URL + " TEXT,"
                 + KEY_EMAIL + " TEXT UNIQUE,"
                 + KEY_PASSWORD + " TEXT,"
                 + KEY_COOKIE + " TEXT" + ")";
         db.execSQL(CREATE_LOGIN_TABLE);
+    }
+
+    private void rollback0001(SQLiteDatabase db){
+        String DROP_LOGIN_TABLE = "DROP TABLE IF EXISTS login";
+        db.execSQL(DROP_LOGIN_TABLE);
     }
 
     private void migration0002(SQLiteDatabase db){
@@ -100,6 +129,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_STICKIES_TAGS_TABLE);
     }
 
+    private void rollback0002(SQLiteDatabase db){
+        String DROP_STICKIES_TAGS_TABLE = "DROP TABLE IF EXISTS stickies_tags";
+        String DROP_TAGS_TABLE = "DROP TABLE IF EXISTS tags";
+        String DROP_STICKIES_TABLE = "DROP TABLE IF EXISTS stickies";
+        String DROP_PROJECTS_TABLE = "DROP TABLE IF EXISTS projects";
+
+        db.execSQL(DROP_STICKIES_TAGS_TABLE);
+        db.execSQL(DROP_TAGS_TABLE);
+        db.execSQL(DROP_STICKIES_TABLE);
+        db.execSQL(DROP_PROJECTS_TABLE);
+    }
+
     /**
      * Storing user details in database
      * */
@@ -113,7 +154,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_COOKIE, "cookie"); // Cookie Placeholder
 
         // Inserting Row
-        db.insert(TABLE_LOGIN, null, values);
+        db.insert("login", null, values);
         db.close(); // Closing database connection
     }
 
@@ -122,7 +163,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * */
     public HashMap<String, String> getUserDetails(){
         HashMap<String,String> user = new HashMap<String,String>();
-        String selectQuery = "SELECT  * FROM " + TABLE_LOGIN;
+        String selectQuery = "SELECT  * FROM login";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -145,7 +186,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * return true if rows are there in table
      * */
     public int getRowCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_LOGIN;
+        String countQuery = "SELECT  * FROM login";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int rowCount = cursor.getCount();
@@ -163,7 +204,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void resetTables(){
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
-        db.delete(TABLE_LOGIN, null, null);
+        db.delete("login", null, null);
         db.close();
     }
 

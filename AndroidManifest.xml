@@ -50,7 +50,6 @@
             android:value="com.github.remomueller.tasktracker.android.MainActivity" />
         </activity>
 
-
         <activity android:name=".StickiesShow"
                   android:label="@string/stickies_show" >
           <meta-data
@@ -70,6 +69,13 @@
           <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.github.remomueller.tasktracker.android.MainActivity" />
+        </activity>
+
+        <activity android:name=".AboutActivity"
+                  android:label="@string/about" >
+          <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.github.remomueller.tasktracker.android.AboutActivity" />
         </activity>
 
     </application>

@@ -89,6 +89,12 @@ public class StickiesIndex extends SherlockFragmentActivity {
                 startActivity(intent);
                 // finish();
                 return true;
+            case R.id.about:
+                intent = new Intent(getApplicationContext(), AboutActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                // finish();
+                return true;
             case R.id.logout:
                 current_user.logoutUser(getApplicationContext());
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -107,7 +113,7 @@ public class StickiesIndex extends SherlockFragmentActivity {
 
         actionBar = getSupportActionBar();
 
-        current_user = new User();
+        current_user = new User(getApplicationContext());
 
         setContentView(R.layout.simple_tabs);
 

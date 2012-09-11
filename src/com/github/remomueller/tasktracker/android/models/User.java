@@ -10,31 +10,51 @@ import android.util.Log;
 
 public class User {
 
+    public int id = 0;
+    public String first_name;
+    public String last_name;
+    public String email;
+    public String password;
+
+    public String site_url;
+    public String auth_token;
+
     // constructor
-    public User(){
-
-    }
-
-    public String getSiteURL(Context context){
+    public User(Context context){
         DatabaseHandler db = new DatabaseHandler(context);
         HashMap<String,String> user;
         user = db.getUserDetails();
-        return user.get("site_url");
+        if(user.get("id") != null && user.get("id") != "")
+            id = Integer.parseInt(user.get("id"));
+        first_name = user.get("first_name");
+        last_name = user.get("last_name");
+        email = user.get("email");
+        password = user.get("password");
+
+        site_url = user.get("site_url");
+        auth_token = user.get("auth_token");
     }
 
-    public String getEmail(Context context){
-        DatabaseHandler db = new DatabaseHandler(context);
-        HashMap<String,String> user;
-        user = db.getUserDetails();
-        return user.get("email");
-    }
+    // public String getSiteURL(Context context){
+    //     DatabaseHandler db = new DatabaseHandler(context);
+    //     HashMap<String,String> user;
+    //     user = db.getUserDetails();
+    //     return user.get("site_url");
+    // }
 
-    public String getPassword(Context context){
-        DatabaseHandler db = new DatabaseHandler(context);
-        HashMap<String,String> user;
-        user = db.getUserDetails();
-        return user.get("password");
-    }
+    // public String getEmail(Context context){
+    //     DatabaseHandler db = new DatabaseHandler(context);
+    //     HashMap<String,String> user;
+    //     user = db.getUserDetails();
+    //     return user.get("email");
+    // }
+
+    // public String getPassword(Context context){
+    //     DatabaseHandler db = new DatabaseHandler(context);
+    //     HashMap<String,String> user;
+    //     user = db.getUserDetails();
+    //     return user.get("password");
+    // }
 
 
     /**

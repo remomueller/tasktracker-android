@@ -168,7 +168,7 @@ public class LoginActivity extends Activity {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                User current_user = new User();
+                User current_user = new User(getApplicationContext());
                 DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
                 // Clear all previous data in database
