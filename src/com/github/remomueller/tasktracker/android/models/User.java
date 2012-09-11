@@ -2,6 +2,7 @@ package com.github.remomueller.tasktracker.android;
 
 import android.content.Context;
 import java.util.HashMap;
+import android.util.Log;
 
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 
@@ -9,6 +10,7 @@ import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 import android.util.Log;
 
 public class User {
+    private static final String TAG = "TaskTrackerAndroid";
 
     public int id = 0;
     public String first_name;
@@ -19,9 +21,11 @@ public class User {
     public String site_url;
     public String auth_token;
 
+    private DatabaseHandler db;
+
     // constructor
     public User(Context context){
-        DatabaseHandler db = new DatabaseHandler(context);
+        db = new DatabaseHandler(context);
         HashMap<String,String> user;
         user = db.getUserDetails();
         if(user.get("id") != null && user.get("id") != "")
@@ -33,35 +37,18 @@ public class User {
 
         site_url = user.get("site_url");
         auth_token = user.get("auth_token");
+
+        if(first_name != null) Log.d(TAG, "First Name: " + first_name);
+        if(last_name != null) Log.d(TAG, "Last Name: " + last_name);
+        if(email != null) Log.d(TAG, "Email: " + email);
+        if(site_url != null) Log.d(TAG, "Site URL: " + site_url);
     }
-
-    // public String getSiteURL(Context context){
-    //     DatabaseHandler db = new DatabaseHandler(context);
-    //     HashMap<String,String> user;
-    //     user = db.getUserDetails();
-    //     return user.get("site_url");
-    // }
-
-    // public String getEmail(Context context){
-    //     DatabaseHandler db = new DatabaseHandler(context);
-    //     HashMap<String,String> user;
-    //     user = db.getUserDetails();
-    //     return user.get("email");
-    // }
-
-    // public String getPassword(Context context){
-    //     DatabaseHandler db = new DatabaseHandler(context);
-    //     HashMap<String,String> user;
-    //     user = db.getUserDetails();
-    //     return user.get("password");
-    // }
 
 
     /**
      * Function get Login status
      * */
-    public boolean isUserLoggedIn(Context context){
-        DatabaseHandler db = new DatabaseHandler(context);
+    public boolean isUserLoggedIn(){
         int count = db.getRowCount();
         if(count > 0){
             // user logged in
@@ -74,9 +61,8 @@ public class User {
      * Function to logout user
      * Reset Database
      * */
-    public boolean logoutUser(Context context){
-        DatabaseHandler db = new DatabaseHandler(context);
-        db.resetTables();
+    public boolean logoutUser(){
+        db.resetLogin(email, site_url);
         return true;
     }
 

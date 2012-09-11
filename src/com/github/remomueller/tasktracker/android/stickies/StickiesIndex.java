@@ -96,7 +96,7 @@ public class StickiesIndex extends SherlockFragmentActivity {
                 // finish();
                 return true;
             case R.id.logout:
-                current_user.logoutUser(getApplicationContext());
+                current_user.logoutUser();
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

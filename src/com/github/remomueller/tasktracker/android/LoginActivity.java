@@ -47,6 +47,8 @@ public class LoginActivity extends Activity {
     TextView loginErrorMsg;
     EditText inputSiteURL;
 
+    User current_user;
+
     // JSON Response node names
     private static String KEY_SUCCESS = "success";
     private static String KEY_ERROR = "error";
@@ -68,6 +70,17 @@ public class LoginActivity extends Activity {
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
         loginErrorMsg = (TextView) findViewById(R.id.login_error);
+
+        current_user = new User(getApplicationContext());
+        if(current_user.site_url != null && current_user.site_url != "")
+            inputSiteURL.setText(current_user.site_url);
+        if(current_user.email != null && current_user.email != "") {
+            inputEmail.setText(current_user.email);
+            inputPassword.requestFocus();
+        } else {
+            inputEmail.requestFocus();
+        }
+
 
         // Login button Click Event
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -171,8 +184,6 @@ public class LoginActivity extends Activity {
                 User current_user = new User(getApplicationContext());
                 DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
-                // Clear all previous data in database
-                current_user.logoutUser(getApplicationContext());
                 db.addUser(site_url, email, password);
 
                 Intent intent = new Intent(getApplicationContext(), StickiesIndex.class);

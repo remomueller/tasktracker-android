@@ -75,7 +75,7 @@ public class ProjectsIndex extends SherlockActivity {
                 return true;
             case R.id.logout:
                 User current_user = new User(getApplicationContext());
-                current_user.logoutUser(getApplicationContext());
+                current_user.logoutUser();
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

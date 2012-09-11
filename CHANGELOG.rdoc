@@ -9,6 +9,7 @@
   * Added database migrations and rollbacks
   * Simplified loading user model from database
   * Added About page
+  * Previous user email and Task Tracker site url is now persisted on logout
 
 == 0.0.1
 

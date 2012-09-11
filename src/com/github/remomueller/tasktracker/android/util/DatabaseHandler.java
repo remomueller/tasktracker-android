@@ -23,7 +23,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ID = "id";
     private static final String KEY_SITE_URL = "site_url";
     private static final String KEY_EMAIL = "email";
-    private static final String KEY_PASSWORD = "password";
     private static final String KEY_COOKIE = "cookie";
 
     public DatabaseHandler(Context context) {
@@ -84,7 +83,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_SITE_URL + " TEXT,"
                 + KEY_EMAIL + " TEXT UNIQUE,"
-                + KEY_PASSWORD + " TEXT,"
+                + "password TEXT,"
                 + KEY_COOKIE + " TEXT" + ")";
         db.execSQL(CREATE_LOGIN_TABLE);
     }
@@ -148,13 +147,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put("rowid", "1"); // Always adding into the first row
         values.put(KEY_SITE_URL, site_url); // Site URL
         values.put(KEY_EMAIL, email); // Email
-        values.put(KEY_PASSWORD, password); // Password
+        values.put("password", password); // Password
         values.put(KEY_COOKIE, "cookie"); // Cookie Placeholder
 
-        // Inserting Row
-        db.insert("login", null, values);
+        db.insertWithOnConflict("login", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
         db.close(); // Closing database connection
     }
 
@@ -163,7 +162,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * */
     public HashMap<String, String> getUserDetails(){
         HashMap<String,String> user = new HashMap<String,String>();
-        String selectQuery = "SELECT  * FROM login";
+        String selectQuery = "SELECT * FROM login";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -186,7 +185,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * return true if rows are there in table
      * */
     public int getRowCount() {
-        String countQuery = "SELECT  * FROM login";
+        String countQuery = "SELECT * FROM login where password IS NOT NULL and password != ''";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int rowCount = cursor.getCount();
@@ -201,10 +200,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * Re crate database
      * Delete all tables and create them again
      * */
-    public void resetTables(){
+    // public void resetTables(){
+    //     SQLiteDatabase db = this.getWritableDatabase();
+    //     // Delete All Rows
+    //     db.delete("login", null, null);
+    //     db.close();
+    // }
+
+    // Logout the current_user if one exists
+    // Set password to NULL.
+    public void resetLogin(String email, String site_url){
+        if(email == null) email = "";
+        if(site_url == null) site_url = "";
+
         SQLiteDatabase db = this.getWritableDatabase();
-        // Delete All Rows
-        db.delete("login", null, null);
+
+        ContentValues values = new ContentValues();
+        values.put("rowid", "1"); // Always adding into the first row
+        values.put("password", "");
+        values.put("email", email);
+        values.put("site_url", site_url);
+
+        // Updating Row
+        db.insertWithOnConflict("login", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
     }
 
