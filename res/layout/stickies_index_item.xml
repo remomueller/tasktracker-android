@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textColor="#2C2C2C"
         android:typeface="sans"
-        android:textSize="15dip"
+        android:textSize="14sp"
         android:textStyle="bold" />
 
     <!-- Sticky Description -->
@@ -24,7 +24,7 @@
         android:layout_below="@id/sticky_id"
         android:layout_toLeftOf="@+id/single_tag"
         android:textColor="#2C2C2C"
-        android:textSize="25dip"
+        android:textSize="22sp"
         android:layout_marginTop="1dip" />
 
     <!-- Sticky Due Date -->
@@ -37,7 +37,7 @@
         android:textColor="#2C2C2C"
         android:gravity="right"
         android:layout_marginRight="5dip"
-        android:textSize="15dip"
+        android:textSize="14sp"
         android:textStyle="bold" />
 
     <TextView
@@ -52,7 +52,7 @@
         android:paddingRight="4px"
         android:paddingTop="1px"
         android:paddingBottom="2px"
-        android:textSize="18dip"
+        android:textSize="14sp"
         android:textStyle="bold"
         android:shadowDx="1.2"
         android:shadowColor="#333"

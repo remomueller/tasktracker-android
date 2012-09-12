@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.graphics.Color;
-import android.widget.TextView;
-
 import android.graphics.Paint;
+import android.widget.TextView;
+import android.view.View;
 
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 
@@ -26,7 +26,7 @@ public class StickiesShow extends Activity {
         // int position = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_POSITION) );
 
         // Hopefully won't be needed in future and can access from database
-        if(sticky == null){
+        if(sticky == null || sticky.id == 0){
             sticky = new Sticky();
             sticky.id = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) );
             sticky.description = intent.getStringExtra(Sticky.STICKY_DESCRIPTION);
@@ -62,8 +62,9 @@ public class StickiesShow extends Activity {
         single_tag.setText(tag.name);
         if(tag.id != 0){
             single_tag.setBackgroundColor(Color.parseColor(tag.color));
+        }else{
+            single_tag.setVisibility(View.GONE);
         }
-
 
     }
 }

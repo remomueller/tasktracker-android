@@ -13,9 +13,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
             android:text="Logged In As"
-            android:textSize="25dip"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#ffffff" />
 
@@ -27,77 +26,78 @@
         <TextView
             android:id="@+id/user_email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
             android:text="User ID"
-            android:textSize="25dip"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#ffffff" />
 
         <TextView
             android:id="@+id/user_id"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
             android:text="Site URL"
-            android:textSize="25dip"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#ffffff" />
 
         <TextView
             android:id="@+id/user_site_url"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
             android:text="Version"
-            android:textSize="25dip"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#ffffff" />
 
         <TextView
             android:id="@+id/app_version"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
             android:text="Database Schema"
-            android:textSize="25dip"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#ffffff" />
 
         <TextView
             android:id="@+id/database_version"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
             android:text="Database Tables"
-            android:textSize="25dip"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#ffffff" />
 
         <TextView
             android:id="@+id/database_tables"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip" />
 
     </LinearLayout>
 

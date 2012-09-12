@@ -196,7 +196,7 @@ public class StickiesNew extends Activity {
                     message = "Description can't be blank";
                     error_found = true;
                 } else if(json.equals("{\"project_id\":[\"can't be blank\"]}") || json.equals("{\"description\":[\"can't be blank\"],\"project_id\":[\"can't be blank\"]}")){
-                    message = "Project can't be blank. Select a project from the Projects page then click New Sticky.";
+                    message = "Project can't be blank.\nSelect a project from the Projects page then click New Sticky.";
                     error_found = true;
                 }
             }
