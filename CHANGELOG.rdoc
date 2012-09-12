@@ -6,11 +6,13 @@
     * Selecting a project will filter the list of stickies to that project
   * Stickies are now split into Completed, Past Due, and Upcoming
   * Stickies can be created by selecting a project, then adding a new sticky from the options menu
+    * Created stickies are currently assigned to the signed in user
   * Added database migrations and rollbacks
   * Simplified loading user model from database
   * Added About page
   * Previous user email and Task Tracker site url is now persisted on logout
   * Store user information from Task Tracker when user logs in
+
 
 == 0.0.1
 

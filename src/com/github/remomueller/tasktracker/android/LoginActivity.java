@@ -37,6 +37,8 @@ import org.apache.commons.io.IOUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
+import java.lang.IllegalArgumentException;
+
 
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 import com.github.remomueller.tasktracker.android.util.Base64;
@@ -52,15 +54,6 @@ public class LoginActivity extends Activity {
     EditText inputSiteURL;
 
     User current_user;
-
-    // JSON Response node names
-    private static String KEY_SUCCESS = "success";
-    private static String KEY_ERROR = "error";
-    private static String KEY_ERROR_MSG = "error_msg";
-    private static String KEY_PASSWORD = "uid";
-    private static String KEY_NAME = "name";
-    private static String KEY_EMAIL = "email";
-    private static String KEY_CREATED_AT = "created_at";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -240,11 +233,15 @@ public class LoginActivity extends Activity {
                 User user;
 
                 try {
-                    Log.d(TAG, "JSON RETURNED: " + contentAsString);
+                    // Log.d(TAG, "JSON RETURNED: " + contentAsString);
                     String user_json = contentAsString.replaceAll(".*?\\\"user\\\"\\:", "").replaceAll("\\}\\}", "}");
-                    Log.d(TAG, "JSON Substring: " + user_json);
+                    // Log.d(TAG, "JSON Substring: " + user_json);
                     user = gson.fromJson(user_json, User.class);
                 } catch (JsonParseException e) {
+                    Log.d(TAG, "Caught JsonParseException: " + e.getMessage());
+                    user = new User(getApplicationContext());
+                } catch (IllegalArgumentException e) {
+                    Log.d(TAG, "Caught IOException: " + e.getMessage());
                     user = new User(getApplicationContext());
                 }
 

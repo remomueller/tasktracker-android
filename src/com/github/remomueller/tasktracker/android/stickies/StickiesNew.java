@@ -115,6 +115,14 @@ public class StickiesNew extends Activity {
             // actionBar.setTextColor(Color.parseColor(current_project.color));
         }
 
+        User current_user = new User(getApplicationContext());
+
+        TextView assignedToTV = (TextView) findViewById(R.id.assigned_to);
+        if(current_user.id > 0 && current_user.name() == "")
+            assignedToTV.setText("Me");
+        else if(current_user.id > 0 && current_user.name() != "")
+            assignedToTV.setText(current_user.name());
+
         stickyDescription = (EditText) findViewById(R.id.description);
         btnStickyCreate = (Button) findViewById(R.id.sticky_create);
         // loginErrorMsg = (TextView) findViewById(R.id.sticky_error);
@@ -239,35 +247,8 @@ public class StickiesNew extends Activity {
         params += "&" + URLEncoder.encode("sticky[due_date]", "UTF-8") + "=" + URLEncoder.encode(sticky.due_date, "UTF-8");
         if(sticky.project_id > 0)
             params += "&" + URLEncoder.encode("sticky[project_id]", "UTF-8") + "=" + URLEncoder.encode(Integer.toString(sticky.project_id), "UTF-8");
-
-        // params = "sticky[description]="+sticky.description+"&sticky[due_date]="+sticky.due_date;
-
-        // if(sticky.project_id > 0)
-        //     params = params + "&sticky[project_id]=" + Integer.toString(sticky.project_id);
-
-        // // Filter by project if project is selected
-        // if(current_project != null && current_project.id > 0)
-        //     params = params + "&project_id=" + current_project.id;
-
-
-        // URL url = new URL(site_url + "/stickies.json?" + params);
-        // HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        // conn.setReadTimeout(10000 /* milliseconds */);
-        // conn.setConnectTimeout(15000 /* milliseconds */);
-        // conn.setRequestMethod("POST"); /* Can be POST */
-        // conn.setDoInput(true);
-        // conn.setRequestProperty("Accept-Charset", "UTF-8");
-        // conn.setRequestProperty("Content-Type", "application/json");
-        // conn.setRequestProperty("WWW-Authenticate", "Basic realm='Application'");
-
-
-        // String decoded = email+":"+password;
-        // String encoded = Base64.encodeBytes( decoded.getBytes() );
-
-        // conn.setRequestProperty("Authorization", "Basic "+encoded);
-
-        // // Starts the query
-        // conn.connect();
+        if(current_user.id > 0)
+            params += "&" + URLEncoder.encode("sticky[owner_id]", "UTF-8") + "=" + URLEncoder.encode(Integer.toString(current_user.id), "UTF-8");
 
 
         URL url = new URL(current_user.site_url + "/stickies.json?" + params);

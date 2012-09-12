@@ -13,23 +13,30 @@ public class User {
     private static final String TAG = "TaskTrackerAndroid";
 
     public int id = 0;
-    public String first_name;
-    public String last_name;
-    public String email;
-    public String password;
+    public String first_name = "";
+    public String last_name = "";
+    public String email = "";
+    public String password = "";
+    public String cookie = "";
 
-    public String site_url;
-    public String authentication_token;
+    public String site_url = "";
+    public String authentication_token = "";
 
-    private DatabaseHandler db;
+    private transient DatabaseHandler db;
 
-    // constructor
+    // Given a Context, return user from database
     public User(Context context){
         db = new DatabaseHandler(context);
         HashMap<String,String> user;
         user = db.getUserDetails();
-        if(user.get("id") != null && user.get("id") != "")
-            id = Integer.parseInt(user.get("id"));
+        // if(user.get("id") != null && user.get("id") != "") // Put in with migration 3
+        //     id = Integer.parseInt(user.get("id"));
+
+        if(user.get("cookie") != null && user.get("cookie") != "")
+             id = Integer.parseInt(user.get("cookie"));
+
+
+
         first_name = user.get("first_name");
         last_name = user.get("last_name");
         email = user.get("email");
@@ -37,6 +44,7 @@ public class User {
 
         site_url = user.get("site_url");
         authentication_token = user.get("authentication_token");
+
 
         // if(first_name != null) Log.d(TAG, "First Name: " + first_name);
         // if(last_name != null) Log.d(TAG, "Last Name: " + last_name);
@@ -58,9 +66,9 @@ public class User {
      * Function get Login status
      * */
     public boolean isUserLoggedIn(){
+        if(db == null) return false;
         int count = db.getRowCount();
         if(count > 0){
-            // user logged in
             return true;
         }
         return false;
@@ -71,17 +79,17 @@ public class User {
      * Reset Database
      * */
     public boolean logoutUser(){
-        db.resetLogin(email, site_url);
+        if(db != null) db.resetLogin(email, site_url);
         return true;
     }
 
     public String name(){
         String result = "";
-        if(first_name != null && last_name != null)
+        if(first_name != null && first_name != "" && last_name != null && last_name != "")
             result = first_name + " " + last_name;
-        else if(first_name != null)
+        else if(first_name != null && first_name != "")
             result = first_name;
-        else if(last_name != null)
+        else if(last_name != null && last_name != "")
             result = last_name;
         return result;
     }

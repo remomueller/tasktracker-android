@@ -12,18 +12,12 @@ import java.util.ArrayList;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    // All Static variables
     // Database Version
     private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "android_api";
 
-    // Login Table Columns names
-    private static final String KEY_ID = "id";
-    private static final String KEY_SITE_URL = "site_url";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_COOKIE = "cookie";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -47,6 +41,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         return tableList;
     }
 
@@ -80,11 +75,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private void migration0001(SQLiteDatabase db){
         String CREATE_LOGIN_TABLE = "CREATE TABLE login("
-                + KEY_ID + " INTEGER PRIMARY KEY,"
-                + KEY_SITE_URL + " TEXT,"
-                + KEY_EMAIL + " TEXT UNIQUE,"
+                + "id INTEGER PRIMARY KEY,"
+                + "site_url TEXT,"
+                + "email TEXT UNIQUE,"
                 + "password TEXT,"
-                + KEY_COOKIE + " TEXT" + ")";
+                + "cookie TEXT" + ")";
         db.execSQL(CREATE_LOGIN_TABLE);
     }
 
@@ -148,12 +143,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put("rowid", "1"); // Always adding into the first row
-        values.put(KEY_COOKIE, Integer.toString(id)); // Cookie Placeholder
+        // values.put("id", Integer.toString(id));
+        values.put("cookie", Integer.toString(id)); // Placing
         // values.put("first_name", first_name); // Put in with migration 3
         // values.put("last_name", last_name); // Put in with migration 3
-        values.put(KEY_EMAIL, email);
-        values.put("password", password); // Password
-        values.put(KEY_SITE_URL, site_url); // Site URL
+        values.put("email", email);
+        values.put("password", password);
+        values.put("site_url", site_url);
         // values.put("authentication_token", authentication_token); // Put in with migration 3
 
 
@@ -173,10 +169,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Move to first row
         cursor.moveToFirst();
         if(cursor.getCount() > 0){
+            user.put("id", cursor.getString(0));
             user.put("site_url", cursor.getString(1));
             user.put("email", cursor.getString(2));
             user.put("password", cursor.getString(3));
-            user.put("cookie", cursor.getString(4));
+            user.put("cookie", cursor.getString(4)); // user.put("cookie", cursor.getString(4));
             user.put("first_name", ""); // user.put("first_name", cursor.getString(5)); // Put in with migration 3
             user.put("last_name", ""); // user.put("last_name", cursor.getString(6)); // Put in with migration 3
             user.put("authentication_token", ""); // user.put("authentication_token", cursor.getString(7)); // Put in with migration 3
