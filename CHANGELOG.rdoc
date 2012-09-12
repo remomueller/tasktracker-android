@@ -1,18 +1,15 @@
-== 0.1.0 (unreleased)
+== 0.1.0
 
 * Enhancements
-  * ActionBar added using ActionBarSherlock
-  * Projects can now be viewed
-    * Selecting a project will filter the list of stickies to that project
+  * ActionBar added that contains links to Projects, Stickies, New Sticky, About, and Sign Out
+  * Stickies can now be viewed filtered by project by selecting a project from the Projects page
   * Stickies are now split into Completed, Past Due, and Upcoming
-  * Stickies can be created by selecting a project, then adding a new sticky from the options menu
+  * Stickies can be created by selecting a project, then clicking New Sticky from the options menu
     * Created stickies are currently assigned to the signed in user
+  * Added About page that provides information on the currently signed in user and the application itself
+  * Previously logged in user information is now persisted on logout
+  * Using ActionBarSherlock and ViewPageIndicator
   * Added database migrations and rollbacks
-  * Simplified loading user model from database
-  * Added About page
-  * Previous user email and Task Tracker site url is now persisted on logout
-  * Store user information from Task Tracker when user logs in
-
 
 == 0.0.1
 
