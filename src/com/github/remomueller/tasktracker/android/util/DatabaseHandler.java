@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.github.remomueller.tasktracker.android.Sticky;
+
 import java.util.ArrayList;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -91,13 +93,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private void migration0002(SQLiteDatabase db){
         String CREATE_PROJECTS_TABLE = "CREATE TABLE projects("
                 + "android_id INTEGER PRIMARY KEY,"
-                + "id INTEGER,"
+                + "id INTEGER UNIQUE,"
                 + "name STRING,"
                 + "description TEXT,"
                 + "color STRING" + ")";
         String CREATE_STICKIES_TABLE = "CREATE TABLE stickies("
                 + "android_id INTEGER PRIMARY KEY,"
-                + "id INTEGER,"
+                + "id INTEGER UNIQUE,"
                 + "project_id INTEGER,"
                 + "user_id INTEGER,"
                 + "owner_id INTEGER,"
@@ -108,7 +110,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "completed INTEGER" + ")";
         String CREATE_TAGS_TABLE = "CREATE TABLE tags("
                 + "android_id INTEGER PRIMARY KEY,"
-                + "id INTEGER,"
+                + "id INTEGER UNIQUE,"
                 + "name STRING,"
                 + "description TEXT,"
                 + "color STRING,"
@@ -157,6 +159,48 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public void addOrUpdateSticky(Sticky sticky) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("id", Integer.toString(sticky.id));
+        values.put("project_id", Integer.toString(sticky.project_id));
+        values.put("user_id", Integer.toString(sticky.user_id));
+        values.put("owner_id", Integer.toString(sticky.owner_id));
+        values.put("group_id", Integer.toString(sticky.group_id));
+        values.put("description", sticky.description);
+        values.put("group_description", sticky.group_description);
+        values.put("due_date", sticky.due_date);
+        values.put("completed", (sticky.completed ? "1" : "0"));
+
+        db.insertWithOnConflict("stickies", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
+        db.close();
+    }
+
+    public Sticky findStickyByID(int id){
+        Sticky sticky = new Sticky();
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM stickies where stickies.id = " + Integer.toString(id) + " LIMIT 1";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0) {
+            sticky.id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
+            sticky.project_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("project_id")));
+            sticky.user_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("user_id")));
+            sticky.owner_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("owner_id")));
+            sticky.group_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("group_id")));
+            sticky.description = cursor.getString(cursor.getColumnIndex("description"));
+            sticky.group_description = cursor.getString(cursor.getColumnIndex("group_description"));
+            sticky.due_date = cursor.getString(cursor.getColumnIndex("due_date"));
+            sticky.completed = cursor.getString(cursor.getColumnIndex("completed")).equals("1");
+        }
+        cursor.close();
+        db.close();
+
+        return sticky;
+    }
+
     /**
      * Getting user data from database
      * */
@@ -164,7 +208,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         HashMap<String,String> user = new HashMap<String,String>();
         String selectQuery = "SELECT * FROM login";
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row
         cursor.moveToFirst();
@@ -190,7 +234,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * */
     public int getRowCount() {
         String countQuery = "SELECT * FROM login where password IS NOT NULL and password != ''";
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int rowCount = cursor.getCount();
         db.close();

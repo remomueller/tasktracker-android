@@ -55,7 +55,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
 import com.github.remomueller.tasktracker.android.util.Base64;
-
+import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 
 public class StickiesNew extends Activity {
     private static final String TAG = "TaskTrackerAndroid";
@@ -187,21 +187,68 @@ public class StickiesNew extends Activity {
         protected void onPostExecute(String json) {
             String result = "";
             String message = json;
+            boolean error_found = false;
 
             if(json != null)
             {
                 Log.d(TAG, "[StickyCreate] Response: " + json);
-                if(json == "{\"description\":[\"can't be blank\"],\"project_id\":[\"can't be blank\"]}")
+                if(json.equals("{\"description\":[\"can't be blank\"]}")){
                     message = "Description can't be blank";
-                else if(json == "{\"project_id\":[\"can't be blank\"]}")
-                    message = "Project can't be blank";
+                    error_found = true;
+                } else if(json.equals("{\"project_id\":[\"can't be blank\"]}") || json.equals("{\"description\":[\"can't be blank\"],\"project_id\":[\"can't be blank\"]}")){
+                    message = "Project can't be blank. Select a project from the Projects page then click New Sticky.";
+                    error_found = true;
+                }
+            }
+
+            if(error_found){
                 Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
                 toast.show();
             }
 
+            if(!error_found){
+                // No Error found, load sticky, and go to sticky show page
+                Gson gson = new Gson();
+                Sticky sticky;
+
+                try {
+                    sticky = gson.fromJson(json, Sticky.class);
+                } catch (JsonParseException e) {
+                    if(json != null) Log.d(TAG, json);
+                    Log.d(TAG, "Caught JsonParseException: " + e.getMessage());
+                    sticky = new Sticky();
+                }
+
+                if(sticky.id > 0){
+                    DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                    db.addOrUpdateSticky(sticky);
+                }
 
 
+                Intent intent = new Intent(getApplicationContext(), StickiesShow.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra(Sticky.STICKY_ID, Integer.toString(sticky.id));
+
+                String tag_id = "0";
+                String tag_name = "";
+                String tag_color = "#80FFFFFF";
+
+                // for(int i = 0; i < sticky.tags.length; i++){
+                //     if(i == 0){
+                //         tag_id = Integer.toString(sticky.tags[i].id);
+                //         tag_name = sticky.tags[i].name;
+                //         tag_color = sticky.tags[i].color;
+                //     }
+                // }
+
+                intent.putExtra(Tag.TAG_ID, tag_id);
+                intent.putExtra(Tag.TAG_NAME, tag_name);
+                intent.putExtra(Tag.TAG_COLOR, tag_color);
+
+                startActivity(intent);
+                finish();
+            }
 
 
             // Gson gson = new Gson();

@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import android.graphics.Paint;
 
+import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
+
 public class StickiesShow extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -18,15 +20,20 @@ public class StickiesShow extends Activity {
         // Get the message from the intent
         Intent intent = getIntent();
 
-        int position = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_POSITION) );
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+        Sticky sticky = db.findStickyByID(Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) ));
+
+        // int position = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_POSITION) );
 
         // Hopefully won't be needed in future and can access from database
-        Sticky sticky = new Sticky();
-        sticky.id = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) );
-        sticky.description = intent.getStringExtra(Sticky.STICKY_DESCRIPTION);
-        sticky.group_description = intent.getStringExtra(Sticky.STICKY_GROUP_DESCRIPTION);
-        sticky.due_date = intent.getStringExtra(Sticky.STICKY_DUE_DATE);
-        sticky.completed = Boolean.parseBoolean(intent.getStringExtra(Sticky.STICKY_COMPLETED));
+        if(sticky == null){
+            sticky = new Sticky();
+            sticky.id = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) );
+            sticky.description = intent.getStringExtra(Sticky.STICKY_DESCRIPTION);
+            sticky.group_description = intent.getStringExtra(Sticky.STICKY_GROUP_DESCRIPTION);
+            sticky.due_date = intent.getStringExtra(Sticky.STICKY_DUE_DATE);
+            sticky.completed = Boolean.parseBoolean(intent.getStringExtra(Sticky.STICKY_COMPLETED));
+        }
 
         // Hopefully won't be needed in future and can access from database
         Tag tag = new Tag();

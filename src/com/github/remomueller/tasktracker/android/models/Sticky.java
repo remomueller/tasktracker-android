@@ -11,34 +11,35 @@ public class Sticky {
 
 
     public int id;
+    public boolean completed;
     public String description;
     public String due_date;
-    public int project_id;
-
     public String group_description;
-
-    public boolean completed;
+    public int group_id;
+    public int owner_id;
+    public int project_id;
+    public int user_id;
 
     public Tag[] tags;
 
     public String short_due_date(){
-    String result = "";
+        String result = "";
 
-    result = (due_date.length() > 10 ? due_date.substring(0, 10) : "");
+        result = (due_date != null && due_date.length() > 10 ? due_date.substring(0, 10) : "");
 
-    return result;
+        return result;
     }
 
     public String full_description(){
-    String result = "";
+        String result = "";
 
-    if(group_description != null){
-        result = description + "\n\n" + group_description;
-    }else{
-        result = description;
-    }
+        if(group_description != null){
+            result = description + "\n\n" + group_description;
+        }else{
+            result = description;
+        }
 
-    return result;
+        return result;
     }
 
 }
