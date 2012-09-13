@@ -32,9 +32,14 @@ public class User {
         // if(user.get("id") != null && user.get("id") != "") // Put in with migration 3
         //     id = Integer.parseInt(user.get("id"));
 
-        if(user.get("cookie") != null && user.get("cookie") != "")
-             id = Integer.parseInt(user.get("cookie"));
-
+        if(user.get("cookie") != null && user.get("cookie") != "") {
+            try {
+                id = Integer.parseInt(user.get("cookie"));
+            } catch(NumberFormatException e) {
+                Log.d(TAG, "Caught NumberFormatException: " + e.getMessage());
+                id = 0;
+            }
+        }
 
 
         first_name = user.get("first_name");
