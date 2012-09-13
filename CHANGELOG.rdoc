@@ -1,7 +1,7 @@
 == 0.1.1
 
 * Bug Fix
-  * Fixed bug on startup for users upgrading from an older version of the app
+  * Fixed crash on startup for users upgrading from an older version of the app
 
 == 0.1.0
 
