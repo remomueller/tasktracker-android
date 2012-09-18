@@ -56,7 +56,7 @@ public class StickiesIndex extends SherlockFragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
+        inflater.inflate(R.menu.stickies_menu, menu);
 
         return super.onCreateOptionsMenu(menu);
     }

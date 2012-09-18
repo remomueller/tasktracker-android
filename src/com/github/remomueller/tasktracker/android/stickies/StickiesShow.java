@@ -1,6 +1,12 @@
 package com.github.remomueller.tasktracker.android;
 
-import android.app.Activity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 import android.os.Bundle;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,20 +14,94 @@ import android.graphics.Paint;
 import android.widget.TextView;
 import android.view.View;
 
+import android.widget.Toast;
+import android.view.Gravity;
+
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 
-public class StickiesShow extends Activity {
+public class StickiesShow extends SherlockFragmentActivity {
+    ActionBar actionBar;
+
+    Project current_project;
+    Sticky sticky;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.sticky_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        Intent intent;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+            case R.id.stickies:
+                intent = new Intent(getApplicationContext(), StickiesIndex.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                if (current_project.id > 0) {
+                    intent.putExtra(Project.PROJECT_ID, Integer.toString(current_project.id));
+                    intent.putExtra(Project.PROJECT_NAME, current_project.name);
+                }
+                startActivity(intent);
+                finish();
+                return true;
+            case R.id.edit:
+                intent = new Intent(getApplicationContext(), StickiesNew.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra(Sticky.STICKY_ID, Integer.toString(sticky.id));
+
+                startActivity(intent);
+                // finish();
+                return true;
+            case R.id.delete:
+
+                Toast toast = Toast.makeText(getApplicationContext(), "Sticky was successfully deleted.", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
+
+                intent = new Intent(getApplicationContext(), StickiesIndex.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                startActivity(intent);
+                finish();
+                return true;
+    //         case R.id.about:
+    //             intent = new Intent(getApplicationContext(), AboutActivity.class);
+    //             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    //             startActivity(intent);
+    //             // finish();
+    //             return true;
+    //         case R.id.logout:
+    //             current_user.logoutUser();
+    //             intent = new Intent(getApplicationContext(), LoginActivity.class);
+    //             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    //             startActivity(intent);
+    //             finish();
+    //             return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        actionBar = getSupportActionBar();
 
         setContentView(R.layout.stickies_show);
 
         // Get the message from the intent
         Intent intent = getIntent();
 
+        current_project = new Project();
+
         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-        Sticky sticky = db.findStickyByID(Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) ));
+        sticky = db.findStickyByID(Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) ));
 
         // int position = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_POSITION) );
 
@@ -34,6 +114,11 @@ public class StickiesShow extends Activity {
             sticky.due_date = intent.getStringExtra(Sticky.STICKY_DUE_DATE);
             sticky.completed = Boolean.parseBoolean(intent.getStringExtra(Sticky.STICKY_COMPLETED));
         }
+
+        current_project = db.findProjectByID(sticky.project_id);
+
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (current_project.id > 0) actionBar.setTitle(current_project.name);
 
         // Hopefully won't be needed in future and can access from database
         Tag tag = new Tag();
