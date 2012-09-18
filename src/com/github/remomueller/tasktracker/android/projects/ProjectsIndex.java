@@ -51,7 +51,7 @@ public class ProjectsIndex extends SherlockActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
       MenuInflater inflater = getSupportMenuInflater();
-      inflater.inflate(R.menu.main_menu, menu);
+      inflater.inflate(R.menu.projects_menu, menu);
 
       return super.onCreateOptionsMenu(menu);
     }
@@ -73,13 +73,9 @@ public class ProjectsIndex extends SherlockActivity {
                 startActivity(intent);
                 finish();
                 return true;
-            case R.id.new_sticky:
-                intent = new Intent(getApplicationContext(), StickiesNew.class);
+            case R.id.new_project:
+                intent = new Intent(getApplicationContext(), ProjectsNew.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                // if(current_project != null){
-                //     intent.putExtra(Project.PROJECT_ID, Integer.toString(current_project.id));
-                //     intent.putExtra(Project.PROJECT_NAME, current_project.name);
-                // }
                 startActivity(intent);
                 // finish();
                 return true;

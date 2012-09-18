@@ -71,6 +71,13 @@
             android:value="com.github.remomueller.tasktracker.android.MainActivity" />
         </activity>
 
+        <activity android:name=".ProjectsNew"
+                  android:label="@string/projects_new" >
+          <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.github.remomueller.tasktracker.android.projects.ProjectsIndex" />
+        </activity>
+
         <activity android:name=".AboutActivity"
                   android:label="@string/about" >
           <meta-data

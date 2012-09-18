@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.github.remomueller.tasktracker.android.Project;
 import com.github.remomueller.tasktracker.android.Sticky;
 
 import java.util.ArrayList;
@@ -199,6 +200,48 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
 
         return sticky;
+    }
+
+    // Projects
+
+    public void addOrUpdateProject(Project project) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("id", Integer.toString(project.id));
+        // values.put("user_id", Integer.toString(project.user_id)); // Put in with migration 3
+        values.put("name", project.name);
+        values.put("description", project.description);
+        // values.put("status", project.status);         // Put in with migration 3
+        // values.put("start_date", project.start_date); // Put in with migration 3
+        // values.put("end_date", project.end_date);     // Put in with migration 3
+        values.put("color", project.color);
+
+        db.insertWithOnConflict("projects", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
+        db.close();
+    }
+
+    public Project findProjectByID(int id){
+        Project project = new Project();
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM projects where projects.id = " + Integer.toString(id) + " LIMIT 1";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0) {
+            project.id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
+            // project.user_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("user_id"))); // Put in with migration 3
+            project.name = cursor.getString(cursor.getColumnIndex("name"));
+            project.description = cursor.getString(cursor.getColumnIndex("description"));
+            // project.status = cursor.getString(cursor.getColumnIndex("status"));          // Put in with migration 3
+            // project.start_date = cursor.getString(cursor.getColumnIndex("start_date"));  // Put in with migration 3
+            // project.end_date = cursor.getString(cursor.getColumnIndex("end_date"));      // Put in with migration 3
+            project.color = cursor.getString(cursor.getColumnIndex("color"));
+        }
+        cursor.close();
+        db.close();
+
+        return project;
     }
 
     /**

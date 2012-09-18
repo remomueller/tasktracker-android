@@ -14,10 +14,11 @@
 
     <string name="projects_index">Projects</string>
     <string name="projects_show">Project</string>
+    <string name="projects_new">New Project</string>
 
     <string name="about">About Task Tracker</string>
 
-    <string name="tab_page_num">This is tab: </string>
+<!--     <string name="tab_page_num">This is tab: </string>
     <string name="tab_page_num_menu">This is tab with menu: </string>
-    <string name="menu_item_refresh">Refresh</string>
+    <string name="menu_item_refresh">Refresh</string> -->
 </resources>
