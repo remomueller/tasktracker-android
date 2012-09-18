@@ -19,6 +19,10 @@ import android.view.Gravity;
 
 import android.view.KeyEvent;
 
+import android.content.DialogInterface;
+import android.app.AlertDialog;
+
+
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 
 public class StickiesShow extends SherlockFragmentActivity {
@@ -77,15 +81,30 @@ public class StickiesShow extends SherlockFragmentActivity {
                 return true;
             case R.id.delete:
 
-                Toast toast = Toast.makeText(getApplicationContext(), "Sticky was successfully deleted.", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
-                toast.show();
 
-                intent = new Intent(getApplicationContext(), StickiesIndex.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Delete Sticky")
+                    .setMessage("Are you sure you want to delete Sticky " + sticky.name() + "?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast toast = Toast.makeText(getApplicationContext(), "Sticky was successfully deleted.", Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+                        toast.show();
 
-                startActivity(intent);
-                finish();
+                        Intent intent = new Intent(getApplicationContext(), StickiesIndex.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                        startActivity(intent);
+                        finish();
+                    }
+
+                })
+                .setNegativeButton("No", null)
+                .show();
+
                 return true;
     //         case R.id.about:
     //             intent = new Intent(getApplicationContext(), AboutActivity.class);
