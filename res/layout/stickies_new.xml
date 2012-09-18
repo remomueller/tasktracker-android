@@ -60,6 +60,13 @@
             android:layout_height="wrap_content"
             android:text="No One" />
 
+        <EditText
+            android:id="@+id/assigned_to_hidden"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
+
 <!-- TODO Select Project List here... -->
 <!--         <TextView android:id="@+id/project_id"
             android:layout_width="match_parent"

@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.Toast;
 import android.view.Gravity;
 
+import android.view.KeyEvent;
+
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 
 public class StickiesShow extends SherlockFragmentActivity {
@@ -24,6 +26,22 @@ public class StickiesShow extends SherlockFragmentActivity {
 
     Project current_project;
     Sticky sticky;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent intent = new Intent(getApplicationContext(), StickiesIndex.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            if (current_project.id > 0) {
+                intent.putExtra(Project.PROJECT_ID, Integer.toString(current_project.id));
+                intent.putExtra(Project.PROJECT_NAME, current_project.name);
+            }
+            startActivity(intent);
+            finish();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

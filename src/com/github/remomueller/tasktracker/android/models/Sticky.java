@@ -1,6 +1,9 @@
 package com.github.remomueller.tasktracker.android;
 
+import android.util.Log;
+
 public class Sticky {
+    private static final String TAG = "TaskTrackerAndroid";
 
     public final static String STICKY_POSITION = "com.github.remomueller.tasktracker.android.models.STICKY_POSITION";
     public final static String STICKY_ID = "com.github.remomueller.tasktracker.android.models.STICKY_ID";
@@ -22,12 +25,8 @@ public class Sticky {
 
     public Tag[] tags;
 
-    public String short_due_date(){
-        String result = "";
-
-        result = (due_date != null && due_date.length() > 10 ? due_date.substring(0, 10) : "");
-
-        return result;
+    public String name(){
+        return "#" + Integer.toString(id);
     }
 
     public String full_description(){
@@ -40,6 +39,37 @@ public class Sticky {
         }
 
         return result;
+    }
+
+    public String short_due_date(){
+        String result = "";
+
+        result = (due_date != null && due_date.length() > 10 ? due_date.substring(0, 10) : "");
+
+        return result;
+    }
+
+    public int dueDateDay(){
+        return dueDateSegment(8,10);
+    }
+
+    public int dueDateMonth(){
+        return dueDateSegment(5,7);
+    }
+
+    public int dueDateYear(){
+        return dueDateSegment(0,4);
+    }
+
+    private int dueDateSegment(int start, int stop){
+        int segment = 0;
+        String result = (short_due_date().length() == 10 ? due_date.substring(start, stop) : "");
+        try {
+            segment = Integer.parseInt(result);
+        } catch(NumberFormatException e) {
+            Log.d(TAG, "Caught NumberFormatException: " + e.getMessage());
+        }
+        return segment;
     }
 
 }

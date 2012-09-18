@@ -1,6 +1,11 @@
 package com.github.remomueller.tasktracker.android;
 
-import android.app.Activity;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 import android.app.Dialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -57,8 +62,10 @@ import com.google.gson.JsonParseException;
 import com.github.remomueller.tasktracker.android.util.Base64;
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 
-public class StickiesNew extends Activity {
+public class StickiesNew extends SherlockActivity {
     private static final String TAG = "TaskTrackerAndroid";
+
+    ActionBar actionBar;
 
     private int mYear;
     private int mMonth;
@@ -67,10 +74,15 @@ public class StickiesNew extends Activity {
     private TextView mDateDisplay;
     private Button mPickDate;
 
-    private EditText stickyDescription;
-    private Button btnStickyCreate;
+    private EditText descriptionET;
+    private TextView assignedToTV;
+    private EditText assignedToET;
+    private Button createBtn;
+
+    private TextView projectNameTV;
 
     Project current_project;
+    Sticky sticky;
 
     static final int DATE_DIALOG_ID = 0;
 
@@ -78,10 +90,17 @@ public class StickiesNew extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        actionBar = getSupportActionBar();
+
         setContentView(R.layout.stickies_new);
 
         mDateDisplay = (TextView) findViewById(R.id.due_date_show);
         mPickDate = (Button) findViewById(R.id.due_date_btn);
+        projectNameTV = (TextView) findViewById(R.id.project_name);
+        assignedToTV = (TextView) findViewById(R.id.assigned_to);
+        assignedToET = (EditText) findViewById(R.id.assigned_to_hidden);
+        descriptionET = (EditText) findViewById(R.id.description);
+        createBtn = (Button) findViewById(R.id.sticky_create);
 
         mPickDate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -89,21 +108,20 @@ public class StickiesNew extends Activity {
             }
         });
 
-        // get the current date
-        final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
-
-        // display the current date
-        updateDisplay();
-
         Intent intent = getIntent();
         current_project = new Project();
+        sticky = new Sticky();
 
-        TextView projectNameTV = (TextView) findViewById(R.id.project_name);
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+        if(intent.getStringExtra(Sticky.STICKY_ID) != null){
+            sticky = db.findStickyByID(Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) ));
+        }
 
-        if(intent.getStringExtra(Project.PROJECT_ID) != null)
+        if(sticky.id > 0){
+            current_project = db.findProjectByID(sticky.project_id);
+            projectNameTV.setText(current_project.name);
+        }
+        else if(intent.getStringExtra(Project.PROJECT_ID) != null)
         {
 
             current_project.id = Integer.parseInt( intent.getStringExtra(Project.PROJECT_ID) );
@@ -115,26 +133,54 @@ public class StickiesNew extends Activity {
             // actionBar.setTextColor(Color.parseColor(current_project.color));
         }
 
+
+        // get the current date
+        final Calendar c = Calendar.getInstance();
+        if (sticky.id > 0) {
+            mYear = sticky.dueDateYear();
+            mMonth = sticky.dueDateMonth() - 1;
+            mDay = sticky.dueDateDay();
+        } else {
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+        }
+
+        // display the current date
+        updateDisplay();
+
         User current_user = new User(getApplicationContext());
 
-        TextView assignedToTV = (TextView) findViewById(R.id.assigned_to);
-        if(current_user.id > 0 && current_user.name() == "")
-            assignedToTV.setText("Me");
-        else if(current_user.id > 0 && current_user.name() != "")
-            assignedToTV.setText(current_user.name());
+        if (sticky.id > 0) {
+            if (sticky.owner_id > 0) {
+                assignedToTV.setText("User ID: " + Integer.toString(sticky.owner_id));
+                assignedToET.setText(Integer.toString(sticky.owner_id));
+            }
 
-        stickyDescription = (EditText) findViewById(R.id.description);
-        btnStickyCreate = (Button) findViewById(R.id.sticky_create);
-        // loginErrorMsg = (TextView) findViewById(R.id.sticky_error);
+        } else {
+
+            if(current_user.id > 0 && current_user.name() == "")
+                assignedToTV.setText("Me");
+            else if(current_user.id > 0 && current_user.name() != "")
+                assignedToTV.setText(current_user.name());
+            assignedToET.setText(Integer.toString(current_user.id));
+        }
+
+        if (sticky.id > 0) {
+            actionBar.setTitle("Edit Sticky " + sticky.name());
+            descriptionET.setText(sticky.description);
+            createBtn.setText("Update Sticky");
+        }
 
         // Login button Click Event
-        btnStickyCreate.setOnClickListener(new View.OnClickListener() {
+        createBtn.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                String description = stickyDescription.getText().toString();
+                String description = descriptionET.getText().toString();
                 String due_date = Integer.toString(mMonth + 1) + "/" + Integer.toString(mDay) + "/" + Integer.toString(mYear);
+                String owner_id = assignedToET.getText().toString();
 
-                new CreateSticky().execute(description, due_date, Integer.toString(current_project.id));
+                new CreateSticky().execute(Integer.toString(sticky.id), description, due_date, Integer.toString(current_project.id), owner_id);
             }
         });
 
@@ -173,9 +219,11 @@ public class StickiesNew extends Activity {
         protected String doInBackground(String... params) {
             try {
                 Sticky sticky = new Sticky();
-                sticky.description = params[0];
-                sticky.due_date = params[1];
-                sticky.project_id = Integer.parseInt(params[2]);
+                sticky.id = Integer.parseInt(params[0]);
+                sticky.description = params[1];
+                sticky.due_date = params[2];
+                sticky.project_id = Integer.parseInt(params[3]);
+                sticky.owner_id = Integer.parseInt(params[4]);
                 return createSticky(sticky);
             } catch (IOException e) {
                 return "Unable to Connect: Make sure you have an active network connection." + e;
@@ -209,8 +257,13 @@ public class StickiesNew extends Activity {
 
             if(!error_found){
                 // No Error found, load sticky, and go to sticky show page
+
+                boolean created = (sticky.id == 0);
+
+                Log.d(TAG, "Sticky ID?: " + Integer.toString(sticky.id));
+
                 Gson gson = new Gson();
-                Sticky sticky;
+                Sticky sticky; // Consider renaming if it uses the same name as the global....?
 
                 try {
                     sticky = gson.fromJson(json, Sticky.class);
@@ -225,6 +278,17 @@ public class StickiesNew extends Activity {
                     db.addOrUpdateSticky(sticky);
                 }
 
+                String notice;
+
+                if (created) {
+                    notice = "Sticky was successfully created.";
+                } else {
+                    notice = "Sticky was successfully updated.";
+                }
+
+                Toast toast = Toast.makeText(getApplicationContext(), notice, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
 
                 Intent intent = new Intent(getApplicationContext(), StickiesShow.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -294,16 +358,26 @@ public class StickiesNew extends Activity {
         params += "&" + URLEncoder.encode("sticky[due_date]", "UTF-8") + "=" + URLEncoder.encode(sticky.due_date, "UTF-8");
         if(sticky.project_id > 0)
             params += "&" + URLEncoder.encode("sticky[project_id]", "UTF-8") + "=" + URLEncoder.encode(Integer.toString(sticky.project_id), "UTF-8");
-        if(current_user.id > 0)
-            params += "&" + URLEncoder.encode("sticky[owner_id]", "UTF-8") + "=" + URLEncoder.encode(Integer.toString(current_user.id), "UTF-8");
+        if(sticky.owner_id > 0)
+            params += "&" + URLEncoder.encode("sticky[owner_id]", "UTF-8") + "=" + URLEncoder.encode(Integer.toString(sticky.owner_id), "UTF-8");
 
+        URL url;
+        if (sticky.id > 0) {
+            url = new URL(current_user.site_url + "/stickies/" + Integer.toString(sticky.id) + ".json?" + params);
+        } else {
+            url = new URL(current_user.site_url + "/stickies.json?" + params);
+        }
 
-        URL url = new URL(current_user.site_url + "/stickies.json?" + params);
+        // URL url = new URL(current_user.site_url + "/stickies.json?" + params);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000 /* milliseconds */);
         conn.setConnectTimeout(15000 /* milliseconds */);
         conn.setDoOutput(true);
-        conn.setRequestMethod("POST");
+        if (sticky.id > 0) {
+            conn.setRequestMethod("PUT");
+        } else {
+            conn.setRequestMethod("POST");
+        }
         // conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("User-Agent", "Task Tracker Android");
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
