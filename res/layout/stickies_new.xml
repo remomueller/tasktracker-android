@@ -64,8 +64,25 @@
             android:id="@+id/assigned_to_hidden"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Status" />
+
+<!--         <Spinner
+            android:id="@+id/status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/sticky_status_array"
+            android:prompt="@string/sticky_status_prompt" /> -->
+
+        <CheckBox
+            android:id="@+id/completed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Completed" />
 
 <!-- TODO Select Project List here... -->
 <!--         <TextView android:id="@+id/project_id"

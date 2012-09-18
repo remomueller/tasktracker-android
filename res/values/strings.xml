@@ -18,7 +18,9 @@
 
     <string name="about">About Task Tracker</string>
 
-<!--     <string name="tab_page_num">This is tab: </string>
-    <string name="tab_page_num_menu">This is tab with menu: </string>
-    <string name="menu_item_refresh">Refresh</string> -->
+    <!-- <string name="sticky_status_prompt">Choose a Status</string>
+    <string-array name="sticky_status_array">
+        <item>Not Completed</item>
+        <item>Completed</item>
+    </string-array> -->
 </resources>

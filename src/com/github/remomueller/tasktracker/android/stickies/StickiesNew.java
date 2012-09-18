@@ -35,6 +35,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.CheckBox;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -77,6 +78,7 @@ public class StickiesNew extends SherlockActivity {
     private EditText descriptionET;
     private TextView assignedToTV;
     private EditText assignedToET;
+    private CheckBox completedCB;
     private Button createBtn;
 
     private TextView projectNameTV;
@@ -100,6 +102,7 @@ public class StickiesNew extends SherlockActivity {
         assignedToTV = (TextView) findViewById(R.id.assigned_to);
         assignedToET = (EditText) findViewById(R.id.assigned_to_hidden);
         descriptionET = (EditText) findViewById(R.id.description);
+        completedCB = (CheckBox) findViewById(R.id.completed);
         createBtn = (Button) findViewById(R.id.sticky_create);
 
         mPickDate.setOnClickListener(new View.OnClickListener() {
@@ -169,6 +172,7 @@ public class StickiesNew extends SherlockActivity {
         if (sticky.id > 0) {
             actionBar.setTitle("Edit Sticky " + sticky.name());
             descriptionET.setText(sticky.description);
+            completedCB.setChecked(sticky.completed);
             createBtn.setText("Update Sticky");
         }
 
@@ -179,8 +183,9 @@ public class StickiesNew extends SherlockActivity {
                 String description = descriptionET.getText().toString();
                 String due_date = Integer.toString(mMonth + 1) + "/" + Integer.toString(mDay) + "/" + Integer.toString(mYear);
                 String owner_id = assignedToET.getText().toString();
+                String completed = (completedCB.isChecked() ? "1" : "0");
 
-                new CreateSticky().execute(Integer.toString(sticky.id), description, due_date, Integer.toString(current_project.id), owner_id);
+                new CreateSticky().execute(Integer.toString(sticky.id), description, due_date, Integer.toString(current_project.id), owner_id, completed);
             }
         });
 
@@ -224,6 +229,7 @@ public class StickiesNew extends SherlockActivity {
                 sticky.due_date = params[2];
                 sticky.project_id = Integer.parseInt(params[3]);
                 sticky.owner_id = Integer.parseInt(params[4]);
+                sticky.completed = params[5].equals("1");
                 return createSticky(sticky);
             } catch (IOException e) {
                 return "Unable to Connect: Make sure you have an active network connection." + e;
@@ -356,6 +362,7 @@ public class StickiesNew extends SherlockActivity {
 
         String params = URLEncoder.encode("sticky[description]", "UTF-8") + "=" + URLEncoder.encode(sticky.description, "UTF-8");
         params += "&" + URLEncoder.encode("sticky[due_date]", "UTF-8") + "=" + URLEncoder.encode(sticky.due_date, "UTF-8");
+        params += "&" + URLEncoder.encode("sticky[completed]", "UTF-8") + "=" + URLEncoder.encode((sticky.completed ? "1" : "0"), "UTF-8");
         if(sticky.project_id > 0)
             params += "&" + URLEncoder.encode("sticky[project_id]", "UTF-8") + "=" + URLEncoder.encode(Integer.toString(sticky.project_id), "UTF-8");
         if(sticky.owner_id > 0)

@@ -3,6 +3,7 @@
 * Enhancements
   * Projects can now be created from the Projects page
   * Stickies can now be edited and deleted from the Sticky page
+  * Stickies can now be marked/unmarked as completed
 
 == 0.1.1
 
