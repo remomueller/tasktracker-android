@@ -1,59 +1,21 @@
 package com.github.remomueller.tasktracker.android;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.DatePickerDialog;
-import android.os.Bundle;
-import android.content.Intent;
-import android.widget.DatePicker;
-import android.widget.TextView;
-import android.widget.Button;
-import android.view.View;
-
-import java.lang.StringBuilder;
-import java.util.Calendar;
-
-import java.net.URLEncoder;
-
-
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.RadioGroup;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-// import java.io.DataOutputStream;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.HttpURLConnection;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-
-import android.widget.Toast;
 
 // From libs directory
-import org.apache.commons.io.IOUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+
 
 import com.github.remomueller.tasktracker.android.util.Base64;
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
