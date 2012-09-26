@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.widget.TextView;
 import android.view.View;
+import android.util.Log;
 
 import android.widget.Toast;
 import android.view.Gravity;
@@ -25,7 +26,11 @@ import android.app.AlertDialog;
 
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 
+import com.github.remomueller.tasktracker.android.StickiesAsyncRequest.StickiesAsyncRequestFinishedListener;
+
 public class StickiesShow extends SherlockFragmentActivity {
+    private static final String TAG = "TaskTrackerAndroid";
+
     ActionBar actionBar;
 
     Project current_project;
@@ -80,8 +85,6 @@ public class StickiesShow extends SherlockFragmentActivity {
                 // finish();
                 return true;
             case R.id.delete:
-
-
                 new AlertDialog.Builder(this)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle("Delete Sticky")
@@ -90,15 +93,27 @@ public class StickiesShow extends SherlockFragmentActivity {
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast toast = Toast.makeText(getApplicationContext(), "Sticky was successfully deleted.", Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
-                        toast.show();
 
-                        Intent intent = new Intent(getApplicationContext(), StickiesIndex.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        StickiesAsyncRequestFinishedListener finishedListener = new StickiesAsyncRequestFinishedListener() {
 
-                        startActivity(intent);
-                        finish();
+                            @Override
+                            public void onTaskFinished(String json) {
+                                Log.d(TAG, json);
+                                Toast toast = Toast.makeText(getApplicationContext(), "Sticky was successfully deleted.", Toast.LENGTH_LONG);
+                                toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+                                toast.show();
+
+                                Intent intent = new Intent(getApplicationContext(), StickiesIndex.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                                startActivity(intent);
+                                finish();
+                            }
+
+                        };
+
+                        new StickiesAsyncRequest(getApplicationContext(), "DELETE", "/stickies/" + Integer.toString(sticky.id) + ".json", null, finishedListener).execute("empty"); // name, description, status, start_date, end_date);
+
                     }
 
                 })

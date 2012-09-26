@@ -219,9 +219,7 @@ public class ProjectsIndex extends SherlockActivity {
         return contentAsString;
 
       } finally {
-        if (is != null) {
-            is.close();
-        }
+        if (is != null) is.close();
       }
     }
 
