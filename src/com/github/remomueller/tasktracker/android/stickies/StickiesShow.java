@@ -90,35 +90,32 @@ public class StickiesShow extends SherlockFragmentActivity {
                     .setTitle("Delete Sticky")
                     .setMessage("Are you sure you want to delete Sticky " + sticky.name() + "?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            StickiesAsyncRequestFinishedListener finishedListener = new StickiesAsyncRequestFinishedListener()
+                            {
+                                @Override
+                                public void onTaskFinished(String json) {
+                                    Log.d(TAG, json);
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Sticky was successfully deleted.", Toast.LENGTH_LONG);
+                                    toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+                                    toast.show();
 
-                        StickiesAsyncRequestFinishedListener finishedListener = new StickiesAsyncRequestFinishedListener() {
+                                    Intent intent = new Intent(getApplicationContext(), StickiesIndex.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                            @Override
-                            public void onTaskFinished(String json) {
-                                Log.d(TAG, json);
-                                Toast toast = Toast.makeText(getApplicationContext(), "Sticky was successfully deleted.", Toast.LENGTH_LONG);
-                                toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
-                                toast.show();
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            };
 
-                                Intent intent = new Intent(getApplicationContext(), StickiesIndex.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            new StickiesAsyncRequest(getApplicationContext(), "DELETE", "/stickies/" + Integer.toString(sticky.id) + ".json", null, finishedListener).execute("empty");
+                        }
 
-                                startActivity(intent);
-                                finish();
-                            }
-
-                        };
-
-                        new StickiesAsyncRequest(getApplicationContext(), "DELETE", "/stickies/" + Integer.toString(sticky.id) + ".json", null, finishedListener).execute("empty"); // name, description, status, start_date, end_date);
-
-                    }
-
-                })
-                .setNegativeButton("No", null)
-                .show();
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
 
                 return true;
     //         case R.id.about:
