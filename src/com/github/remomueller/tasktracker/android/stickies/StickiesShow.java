@@ -26,7 +26,8 @@ import android.app.AlertDialog;
 
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 
-import com.github.remomueller.tasktracker.android.StickiesAsyncRequest.StickiesAsyncRequestFinishedListener;
+import com.github.remomueller.tasktracker.android.util.AsyncRequest;
+import com.github.remomueller.tasktracker.android.util.AsyncRequest.AsyncRequestFinishedListener;
 
 public class StickiesShow extends SherlockFragmentActivity {
     private static final String TAG = "TaskTrackerAndroid";
@@ -93,7 +94,7 @@ public class StickiesShow extends SherlockFragmentActivity {
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            StickiesAsyncRequestFinishedListener finishedListener = new StickiesAsyncRequestFinishedListener()
+                            AsyncRequestFinishedListener finishedListener = new AsyncRequestFinishedListener()
                             {
                                 @Override
                                 public void onTaskFinished(String json) {
@@ -110,7 +111,7 @@ public class StickiesShow extends SherlockFragmentActivity {
                                 }
                             };
 
-                            new StickiesAsyncRequest(getApplicationContext(), "DELETE", "/stickies/" + Integer.toString(sticky.id) + ".json", null, finishedListener).execute("empty");
+                            new AsyncRequest(getApplicationContext(), "DELETE", "/stickies/" + Integer.toString(sticky.id) + ".json", null, finishedListener).execute("empty");
                         }
 
                     })

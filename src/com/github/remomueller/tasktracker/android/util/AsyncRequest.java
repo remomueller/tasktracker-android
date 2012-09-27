@@ -1,4 +1,4 @@
-package com.github.remomueller.tasktracker.android;
+package com.github.remomueller.tasktracker.android.util;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -16,6 +16,9 @@ import java.net.HttpURLConnection;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
+import android.content.pm.PackageManager.NameNotFoundException;
+
+import com.github.remomueller.tasktracker.android.User;
 
 import com.github.remomueller.tasktracker.android.util.Base64;
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
@@ -27,7 +30,7 @@ import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 // DELETE /stickies/1.json                                      // Delete Sticky (returns empty JSON)
 
 
-public class StickiesAsyncRequest extends AsyncTask<String, Void, String> {
+public class AsyncRequest extends AsyncTask<String, Void, String> {
     private static final String TAG = "TaskTrackerAndroid";
 
     private Context context;
@@ -36,7 +39,7 @@ public class StickiesAsyncRequest extends AsyncTask<String, Void, String> {
     private String params;
     private boolean doOutput;
     private boolean doInput;
-    private final StickiesAsyncRequestFinishedListener finishedListener;
+    private final AsyncRequestFinishedListener finishedListener;
 
     // String params = URLEncoder.encode("project[name]", "UTF-8") + "=" + URLEncoder.encode(project.name, "UTF-8");
     // params += "&" + URLEncoder.encode("project[description]", "UTF-8") + "=" + URLEncoder.encode(project.description, "UTF-8");
@@ -44,11 +47,11 @@ public class StickiesAsyncRequest extends AsyncTask<String, Void, String> {
     // params += "&" + URLEncoder.encode("project[start_date]", "UTF-8") + "=" + URLEncoder.encode(project.start_date, "UTF-8");
     // params += "&" + URLEncoder.encode("project[end_date]", "UTF-8") + "=" + URLEncoder.encode(project.end_date, "UTF-8");
 
-    public interface StickiesAsyncRequestFinishedListener {
+    public interface AsyncRequestFinishedListener {
         void onTaskFinished(String json); // If you want to pass something back to the listener add a param to this method
     }
 
-    public StickiesAsyncRequest(Context context, String method, String path, String params, StickiesAsyncRequestFinishedListener finishedListener) {
+    public AsyncRequest(Context context, String method, String path, String params, AsyncRequestFinishedListener finishedListener) {
         this.context = context;
         this.method = method;
         this.path = path;
@@ -63,7 +66,7 @@ public class StickiesAsyncRequest extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         try {
-            return stickyRequest();
+            return webRequest();
         } catch (IOException e) {
             return "Unable to Connect: Make sure you have an active network connection." + e;
         }
@@ -75,7 +78,7 @@ public class StickiesAsyncRequest extends AsyncTask<String, Void, String> {
         finishedListener.onTaskFinished(json);
    }
 
-    private String stickyRequest() throws IOException {
+    private String webRequest() throws IOException {
       InputStream is = null;
       OutputStreamWriter wr = null;
       BufferedReader rd = null;
@@ -89,14 +92,27 @@ public class StickiesAsyncRequest extends AsyncTask<String, Void, String> {
 
         URL url = new URL(current_user.site_url + path);
 
+        String versionName = "";
+        try {
+            versionName = " " + context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+        } catch (NameNotFoundException e) {
+            Log.d(TAG, e.getMessage());
+        }
+
+        // Log.d(TAG, "--------------");
+        // Log.d(TAG, "- ");
+        // Log.d(TAG, "- Version" + versionName);
+        // Log.d(TAG, "- ");
+        // Log.d(TAG, "--------------");
+
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestProperty("Accept-Charset", "UTF-8");
+        conn.setRequestProperty(      "User-Agent", "Task Tracker Android" + versionName);
+        conn.setRequestProperty(  "Accept-Charset", "UTF-8");
         conn.setRequestProperty("WWW-Authenticate", "Basic realm='Application'");
-        conn.setRequestProperty("Authorization", "Basic "+encoded);
-        conn.setRequestProperty("User-Agent", "Task Tracker Android");
-        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        conn.setReadTimeout(10000 /* milliseconds */);
-        conn.setConnectTimeout(15000 /* milliseconds */);
+        conn.setRequestProperty(   "Authorization", "Basic "+encoded);
+        conn.setRequestProperty(    "Content-Type", "application/x-www-form-urlencoded");
+        conn.setReadTimeout(10000);    /* milliseconds, 10 seconds */
+        conn.setConnectTimeout(15000); /* milliseconds, 15 seconds */
         conn.setUseCaches(false);
         conn.setRequestMethod(method);
         conn.setDoInput(doInput);
