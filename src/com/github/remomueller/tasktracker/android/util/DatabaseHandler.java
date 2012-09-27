@@ -379,6 +379,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if(email == null) email = "";
         if(site_url == null) site_url = "";
 
+        ArrayList<Object> tables = getTables();
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -390,7 +392,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Updating Row
         db.insertWithOnConflict("login", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
 
-        // TODO - truncate existing tables
+        if(tables.contains("projects")) db.delete("projects", null, null);
+        if(tables.contains("stickies")) db.delete("stickies", null, null);
+        if(tables.contains("stickies_tags")) db.delete("stickies_tags", null, null);
+        if(tables.contains("tags")) db.delete("tags", null, null);
+
         db.close();
     }
 
