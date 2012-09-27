@@ -152,7 +152,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("due_date", sticky.due_date);
         values.put("completed", (sticky.completed ? "1" : "0"));
 
-        Log.d(TAG, "Inserting Sticky " + sticky.name());
+        // Log.d(TAG, "Inserting Sticky " + sticky.name());
 
         db.insertWithOnConflict("stickies", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
@@ -238,7 +238,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // values.put("end_date", project.end_date);     // Put in with migration 3
         values.put("color", project.color);
 
-        Log.d(TAG, "Inserting Project " + project.name);
+        // Log.d(TAG, "Inserting Project " + project.name);
 
         db.insertWithOnConflict("projects", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
         db.close();

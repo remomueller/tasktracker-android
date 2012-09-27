@@ -105,14 +105,17 @@ public class StickiesFragment extends SherlockFragment {
                     db.addOrUpdateSticky(array[i]);
                 }
 
-                String conditions;
+                String conditions = "";
+
+                if(current_project.id > 0)
+                    conditions = "project_id = " + current_project.id + " and ";
 
                 if(position == 0) { // Completed
-                    conditions = "completed = 1 and due_date < '" + dbTomorrow + "' ORDER BY due_date DESC";
+                    conditions += "completed = 1 and due_date < '" + dbTomorrow + "' ORDER BY due_date DESC";
                 } else if(position == 2) { // Upcoming
-                    conditions = "completed = 0 and due_date >= '" + dbTomorrow + "' ORDER BY due_date ASC";
+                    conditions += "completed = 0 and due_date >= '" + dbTomorrow + "' ORDER BY due_date ASC";
                 } else { // Past Due
-                    conditions = "completed = 0 and due_date < '" + dbTomorrow + "' ORDER BY due_date DESC";
+                    conditions += "completed = 0 and due_date < '" + dbTomorrow + "' ORDER BY due_date DESC";
                 }
 
                 stickies.addAll(db.findAllStickies(conditions));

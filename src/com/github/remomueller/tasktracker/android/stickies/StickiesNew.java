@@ -68,6 +68,8 @@ public class StickiesNew extends SherlockActivity {
 
     ActionBar actionBar;
 
+    DatabaseHandler db;
+
     private int mYear;
     private int mMonth;
     private int mDay;
@@ -93,6 +95,8 @@ public class StickiesNew extends SherlockActivity {
         super.onCreate(savedInstanceState);
 
         actionBar = getSupportActionBar();
+
+        db = new DatabaseHandler(getApplicationContext());
 
         setContentView(R.layout.stickies_new);
 
@@ -281,7 +285,6 @@ public class StickiesNew extends SherlockActivity {
                 }
 
                 if(sticky.id > 0){
-                    DatabaseHandler db = new DatabaseHandler(getApplicationContext());
                     db.addOrUpdateSticky(sticky);
                 }
 

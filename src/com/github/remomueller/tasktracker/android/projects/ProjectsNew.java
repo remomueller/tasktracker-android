@@ -80,7 +80,7 @@ public class ProjectsNew extends Activity {
     private RadioGroup statusRG;
     private Button createBtn;
 
-    // Project current_project;
+    Project project;
 
     static final int START_DATE_DIALOG_ID = 0;
     static final int END_DATE_DIALOG_ID = 1;
@@ -90,6 +90,13 @@ public class ProjectsNew extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.projects_new);
+
+        project = new Project();
+
+        // DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+        // if(intent.getStringExtra(Project.PROJECT_ID) != null){
+        //     project = db.findProjectByID(Integer.parseInt( intent.getStringExtra(Project.PROJECT_ID) ));
+        // }
 
         mDateDisplayStartDate = (TextView) findViewById(R.id.start_date_show);
         mPickDateStartDate = (Button) findViewById(R.id.start_date_btn);
@@ -262,14 +269,15 @@ public class ProjectsNew extends Activity {
             if(!error_found){
                 // No Error found, load project, and go to project show page
                 Gson gson = new Gson();
-                Project project;
+                Project server_project;
 
                 try {
-                    project = gson.fromJson(json, Project.class);
+                    server_project = gson.fromJson(json, Project.class);
+                    if(server_project != null) project = server_project;
                 } catch (JsonParseException e) {
                     if(json != null) Log.d(TAG, json);
                     Log.d(TAG, "Caught JsonParseException: " + e.getMessage());
-                    project = new Project();
+                    server_project = new Project();
                 }
 
                 if(project.id > 0){

@@ -68,7 +68,10 @@ public class AsyncRequest extends AsyncTask<Void, Void, String> {
     public AsyncRequest(Context context, String method, String path, String params, AsyncRequestFinishedListener finishedListener) {
         this.context = context;
         this.method = method;
-        this.path = path;
+        if(method.equals("GET"))
+            this.path = path + "?" + params;
+        else
+            this.path = path;
         this.doInput = true;
         this.doOutput = false;
         if(method.equals("POST") || method.equals("PUT") || method.equals("PATCH")) doOutput = true;
