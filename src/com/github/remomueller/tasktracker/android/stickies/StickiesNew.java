@@ -269,14 +269,15 @@ public class StickiesNew extends SherlockActivity {
                 Log.d(TAG, "Sticky ID?: " + Integer.toString(sticky.id));
 
                 Gson gson = new Gson();
-                Sticky sticky; // Consider renaming if it uses the same name as the global....?
+                Sticky server_sticky; // Consider renaming if it uses the same name as the global....?
 
                 try {
-                    sticky = gson.fromJson(json, Sticky.class);
+                    server_sticky = gson.fromJson(json, Sticky.class);
+                    if(server_sticky != null) sticky = server_sticky;
                 } catch (JsonParseException e) {
                     if(json != null) Log.d(TAG, json);
                     Log.d(TAG, "Caught JsonParseException: " + e.getMessage());
-                    sticky = new Sticky();
+                    server_sticky = new Sticky();
                 }
 
                 if(sticky.id > 0){

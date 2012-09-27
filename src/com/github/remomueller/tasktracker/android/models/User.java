@@ -28,7 +28,7 @@ public class User {
     public User(Context context){
         db = new DatabaseHandler(context);
         HashMap<String,String> user;
-        user = db.getUserDetails();
+        user = db.getLogin();
         // if(user.get("id") != null && user.get("id") != "") // Put in with migration 3
         //     id = Integer.parseInt(user.get("id"));
 

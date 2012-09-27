@@ -25,6 +25,11 @@ public class Sticky {
 
     public Tag[] tags;
 
+    public Sticky() {
+        id = 0;
+        tags = new Tag[0];
+    }
+
     public String name(){
         return "#" + Integer.toString(id);
     }

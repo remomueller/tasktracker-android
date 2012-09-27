@@ -1,3 +1,13 @@
+// // This file should act as an intermediary between the app, and the database/web JSON requests.
+
+// // Ex:
+// // 1. App makes requests for all projects
+// // 2. ProjectRecord checks if a refresh has been requested, or if it's been X time since last refresh
+// // 3. If refresh is requested, then make a web request for projects as JSON and load them into the internal database
+// // 4. Complete request by returning all projects as Project objects (Array) from database.
+
+// // NOTE: If the pull from the external JSON server fails, it should still pull from the internal database.
+
 package com.github.remomueller.tasktracker.android.util;
 
 import android.content.Context;
@@ -12,12 +22,16 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.HttpURLConnection;
 
+import java.util.ArrayList;
+
 // From libs directory
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
 import android.content.pm.PackageManager.NameNotFoundException;
 
+import com.github.remomueller.tasktracker.android.Project;
+import com.github.remomueller.tasktracker.android.Sticky;
 import com.github.remomueller.tasktracker.android.User;
 
 import com.github.remomueller.tasktracker.android.util.Base64;
@@ -30,7 +44,7 @@ import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 // DELETE /stickies/1.json                                      // Delete Sticky (returns empty JSON)
 
 
-public class AsyncRequest extends AsyncTask<String, Void, String> {
+public class AsyncRequest extends AsyncTask<Void, Void, String> {
     private static final String TAG = "TaskTrackerAndroid";
 
     private Context context;
@@ -64,7 +78,7 @@ public class AsyncRequest extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected String doInBackground(Void... params) {
         try {
             return webRequest();
         } catch (IOException e) {
@@ -75,6 +89,9 @@ public class AsyncRequest extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String json) {
         super.onPostExecute(json);
+        // Sticky sticky = new Sticky();
+        // sticky.id = 5;
+        // ArrayList<Project> projects = new ArrayList<Project>();
         finishedListener.onTaskFinished(json);
    }
 
@@ -98,12 +115,6 @@ public class AsyncRequest extends AsyncTask<String, Void, String> {
         } catch (NameNotFoundException e) {
             Log.d(TAG, e.getMessage());
         }
-
-        // Log.d(TAG, "--------------");
-        // Log.d(TAG, "- ");
-        // Log.d(TAG, "- Version" + versionName);
-        // Log.d(TAG, "- ");
-        // Log.d(TAG, "--------------");
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestProperty(      "User-Agent", "Task Tracker Android" + versionName);

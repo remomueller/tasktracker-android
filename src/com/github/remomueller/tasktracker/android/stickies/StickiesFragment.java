@@ -41,6 +41,10 @@ import com.google.gson.JsonParseException;
 
 import com.github.remomueller.tasktracker.android.util.Base64;
 
+import com.github.remomueller.tasktracker.android.util.AsyncRequest;
+import com.github.remomueller.tasktracker.android.util.AsyncRequest.AsyncRequestFinishedListener;
+import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
+
 public class StickiesFragment extends SherlockFragment {
     private static final String TAG = "TaskTrackerAndroid";
 
@@ -50,6 +54,8 @@ public class StickiesFragment extends SherlockFragment {
 
     public ArrayList<Sticky> stickies = new ArrayList<Sticky>();
     StickyAdapter stickyAdapter;
+
+    DatabaseHandler db;
 
     public static StickiesFragment newInstance(int location, Project project) {
         StickiesFragment fragment = new StickiesFragment();
@@ -62,7 +68,81 @@ public class StickiesFragment extends SherlockFragment {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         this.setRetainInstance(true);
-        new GetStickies().execute(Integer.toString(position));
+
+         db = new DatabaseHandler(getActivity());
+
+        // new GetStickies().execute(Integer.toString(position));
+
+        Date today = new Date();
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        c.add(Calendar.DATE, 1);
+        Date tomorrow = c.getTime();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        String due_date_today = formatter.format(today);
+        String due_date_tomorrow = formatter.format(tomorrow);
+        SimpleDateFormat dbFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        final String dbToday = dbFormatter.format(today);
+        final String dbTomorrow = dbFormatter.format(tomorrow);
+
+        AsyncRequestFinishedListener finishedListener = new AsyncRequestFinishedListener()
+        {
+            @Override
+            public void onTaskFinished(String json) {
+                Gson gson = new Gson();
+                Sticky[] array;
+
+                try {
+                    array = gson.fromJson(json, Sticky[].class);
+                    if(array == null) array = new Sticky[0];
+                } catch (JsonParseException e) {
+                    array = new Sticky[0];
+                }
+
+                for(int i = 0; i < array.length; i++) {
+                    db.addOrUpdateSticky(array[i]);
+                }
+
+                String conditions;
+
+                if(position == 0) { // Completed
+                    conditions = "completed = 1 and due_date < '" + dbTomorrow + "' ORDER BY due_date DESC";
+                } else if(position == 2) { // Upcoming
+                    conditions = "completed = 0 and due_date >= '" + dbTomorrow + "' ORDER BY due_date ASC";
+                } else { // Past Due
+                    conditions = "completed = 0 and due_date < '" + dbTomorrow + "' ORDER BY due_date DESC";
+                }
+
+                stickies.addAll(db.findAllStickies(conditions));
+                if(stickyAdapter != null) stickyAdapter.notifyDataSetChanged();
+            }
+        };
+
+        String params = "";
+
+        if(position == 0) { // Completed
+            params = "status[]=completed&order=stickies.due_date+DESC&due_date_end_date="+due_date_today;
+        }else if(position == 2) { // Upcoming
+            params = "status[]=planned&order=stickies.due_date+ASC&due_date_start_date="+due_date_tomorrow;
+        }else{ // Past Due
+            params = "status[]=planned&order=stickies.due_date+DESC&due_date_end_date="+due_date_today;
+        }
+
+        // TODO: Allow user to set preference from 2. View Control
+        // http://developer.android.com/design/patterns/actionbar.html
+        if(true)
+            params = params + "&owner_id=me";
+
+        // Filter by project if project is selected
+        if(current_project != null && current_project.id > 0)
+            params = params + "&project_id=" + current_project.id;
+
+        if(getActivity() != null)
+            new AsyncRequest(getActivity().getApplicationContext(), "GET", "/stickies.json", params, finishedListener).execute();
+
+
     }
 
     @Override

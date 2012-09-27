@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.github.remomueller.tasktracker.android.Project;
 import com.github.remomueller.tasktracker.android.Sticky;
@@ -14,6 +15,7 @@ import com.github.remomueller.tasktracker.android.Sticky;
 import java.util.ArrayList;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
+    private static final String TAG = "TaskTrackerAndroid";
 
     // Database Version
     private static final int DATABASE_VERSION = 2;
@@ -37,11 +39,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String SQL_GET_ALL_TABLES = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
         Cursor cursor = db.rawQuery(SQL_GET_ALL_TABLES, null);
         cursor.moveToFirst();
-        if (!cursor.isAfterLast()) {
-            do {
-                tableList.add(cursor.getString(0));
-            }
-            while (cursor.moveToNext());
+        while (cursor.isAfterLast() == false) {
+            tableList.add(cursor.getString(0));
+            cursor.moveToNext();
         }
         cursor.close();
         db.close();
@@ -138,28 +138,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(DROP_PROJECTS_TABLE);
     }
 
-    /**
-     * Storing user details in database
-     * */
-    public void addUser(int id, String first_name, String last_name, String email, String password, String site_url, String authentication_token) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put("rowid", "1"); // Always adding into the first row
-        // values.put("id", Integer.toString(id));
-        values.put("cookie", Integer.toString(id)); // Placing
-        // values.put("first_name", first_name); // Put in with migration 3
-        // values.put("last_name", last_name); // Put in with migration 3
-        values.put("email", email);
-        values.put("password", password);
-        values.put("site_url", site_url);
-        // values.put("authentication_token", authentication_token); // Put in with migration 3
-
-
-        db.insertWithOnConflict("login", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
-        db.close(); // Closing database connection
-    }
-
     public void addOrUpdateSticky(Sticky sticky) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -173,6 +151,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("group_description", sticky.group_description);
         values.put("due_date", sticky.due_date);
         values.put("completed", (sticky.completed ? "1" : "0"));
+
+        Log.d(TAG, "Inserting Sticky " + sticky.name());
 
         db.insertWithOnConflict("stickies", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
@@ -202,6 +182,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return sticky;
     }
 
+    public ArrayList<Sticky> findAllStickies(String conditions){
+        ArrayList<Sticky> stickies = new ArrayList<Sticky>();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM stickies";
+        if(conditions == null || conditions.equals("")) conditions = "1 = 1";
+        selectQuery += " WHERE " + conditions;
+        // selectQuery += " ORDER BY name";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        while (cursor.isAfterLast() == false) {
+            Sticky sticky = new Sticky();
+            sticky.id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
+            sticky.project_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("project_id")));
+            sticky.user_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("user_id")));
+            sticky.owner_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("owner_id")));
+            sticky.group_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("group_id")));
+            sticky.description = cursor.getString(cursor.getColumnIndex("description"));
+            sticky.group_description = cursor.getString(cursor.getColumnIndex("group_description"));
+            sticky.due_date = cursor.getString(cursor.getColumnIndex("due_date"));
+            sticky.completed = cursor.getString(cursor.getColumnIndex("completed")).equals("1");
+            stickies.add(sticky);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+
+        return stickies;
+    }
+
     // Projects
 
     public void addOrUpdateProject(Project project) {
@@ -216,6 +227,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // values.put("start_date", project.start_date); // Put in with migration 3
         // values.put("end_date", project.end_date);     // Put in with migration 3
         values.put("color", project.color);
+
+        Log.d(TAG, "Inserting Project " + project.name);
 
         db.insertWithOnConflict("projects", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
@@ -244,10 +257,62 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return project;
     }
 
+    public ArrayList<Project> findAllProjects(String conditions){
+        ArrayList<Project> projects = new ArrayList<Project>();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM projects";
+        if(conditions == null || conditions.equals("")) conditions = "1 = 1";
+        selectQuery += " WHERE " + conditions;
+        selectQuery += " ORDER BY name";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        while (cursor.isAfterLast() == false) {
+            Project project = new Project();
+            project.id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
+            // project.user_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("user_id"))); // Put in with migration 3
+            project.name = cursor.getString(cursor.getColumnIndex("name"));
+            project.description = cursor.getString(cursor.getColumnIndex("description"));
+            // project.status = cursor.getString(cursor.getColumnIndex("status"));          // Put in with migration 3
+            // project.start_date = cursor.getString(cursor.getColumnIndex("start_date"));  // Put in with migration 3
+            // project.end_date = cursor.getString(cursor.getColumnIndex("end_date"));      // Put in with migration 3
+            project.color = cursor.getString(cursor.getColumnIndex("color"));
+            projects.add(project);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+
+        return projects;
+    }
+
+    /**
+     * Storing user details in database
+     * */
+    public void addLogin(int id, String first_name, String last_name, String email, String password, String site_url, String authentication_token) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("rowid", "1"); // Always adding into the first row
+        // values.put("id", Integer.toString(id));
+        values.put("cookie", Integer.toString(id)); // Placing
+        // values.put("first_name", first_name); // Put in with migration 3
+        // values.put("last_name", last_name); // Put in with migration 3
+        values.put("email", email);
+        values.put("password", password);
+        values.put("site_url", site_url);
+        // values.put("authentication_token", authentication_token); // Put in with migration 3
+
+
+        db.insertWithOnConflict("login", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
+        db.close(); // Closing database connection
+    }
+
     /**
      * Getting user data from database
      * */
-    public HashMap<String, String> getUserDetails(){
+    public HashMap<String, String> getLogin(){
         HashMap<String,String> user = new HashMap<String,String>();
         String selectQuery = "SELECT * FROM login";
 
@@ -276,7 +341,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * return true if rows are there in table
      * */
     public int getRowCount() {
-        String countQuery = "SELECT * FROM login where password IS NOT NULL and password != ''";
+        String countQuery = "SELECT * FROM login WHERE password IS NOT NULL and password != ''";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int rowCount = cursor.getCount();
@@ -314,6 +379,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Updating Row
         db.insertWithOnConflict("login", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
+
+        // TODO - truncate existing tables
         db.close();
     }
 

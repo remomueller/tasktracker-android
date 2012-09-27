@@ -246,7 +246,7 @@ public class LoginActivity extends Activity {
                 }
 
                 DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                db.addUser(user.id, user.first_name, user.last_name, email, password, site_url, user.authentication_token);
+                db.addLogin(user.id, user.first_name, user.last_name, email, password, site_url, user.authentication_token);
             }
 
             return authenticated;

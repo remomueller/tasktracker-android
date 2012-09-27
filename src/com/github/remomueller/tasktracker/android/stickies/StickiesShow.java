@@ -98,7 +98,6 @@ public class StickiesShow extends SherlockFragmentActivity {
                             {
                                 @Override
                                 public void onTaskFinished(String json) {
-                                    Log.d(TAG, json);
                                     Toast toast = Toast.makeText(getApplicationContext(), "Sticky was successfully deleted.", Toast.LENGTH_LONG);
                                     toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
                                     toast.show();
@@ -111,7 +110,7 @@ public class StickiesShow extends SherlockFragmentActivity {
                                 }
                             };
 
-                            new AsyncRequest(getApplicationContext(), "DELETE", "/stickies/" + Integer.toString(sticky.id) + ".json", null, finishedListener).execute("empty");
+                            new AsyncRequest(getApplicationContext(), "DELETE", "/stickies/" + Integer.toString(sticky.id) + ".json", null, finishedListener).execute();
                         }
 
                     })
