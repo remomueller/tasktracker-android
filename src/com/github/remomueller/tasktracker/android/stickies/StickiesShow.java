@@ -37,6 +37,8 @@ public class StickiesShow extends SherlockFragmentActivity {
     Project current_project;
     Sticky sticky;
 
+    DatabaseHandler db;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -110,6 +112,7 @@ public class StickiesShow extends SherlockFragmentActivity {
                                 }
                             };
 
+                            db.deleteStickyByID(sticky.id);
                             new AsyncRequest(getApplicationContext(), "DELETE", "/stickies/" + Integer.toString(sticky.id) + ".json", null, finishedListener).execute();
                         }
 
@@ -149,7 +152,7 @@ public class StickiesShow extends SherlockFragmentActivity {
 
         current_project = new Project();
 
-        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+        db = new DatabaseHandler(getApplicationContext());
         sticky = db.findStickyByID(Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) ));
 
         // int position = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_POSITION) );

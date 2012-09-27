@@ -182,6 +182,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return sticky;
     }
 
+    public void deleteStickyByID(int id){
+        Sticky sticky = new Sticky();
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM stickies where stickies.id = " + Integer.toString(id) + " LIMIT 1";
+
+        db.delete("stickies", "id = ?", new String[] { Integer.toString(id) });
+
+        db.close();
+    }
+
     public ArrayList<Sticky> findAllStickies(String conditions){
         ArrayList<Sticky> stickies = new ArrayList<Sticky>();
 
