@@ -33,9 +33,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CheckBox;
+import android.graphics.Color;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -76,6 +78,7 @@ public class StickiesNew extends SherlockActivity {
 
     private TextView mDateDisplay;
     private Button mPickDate;
+    private Button clearDate;
 
     private EditText descriptionET;
     private TextView assignedToTV;
@@ -84,6 +87,7 @@ public class StickiesNew extends SherlockActivity {
     private Button createBtn;
 
     private TextView projectNameTV;
+    private LinearLayout projectTagsLL;
 
     Project current_project;
     Sticky sticky;
@@ -102,7 +106,9 @@ public class StickiesNew extends SherlockActivity {
 
         mDateDisplay = (TextView) findViewById(R.id.due_date_show);
         mPickDate = (Button) findViewById(R.id.due_date_btn);
+        clearDate = (Button) findViewById(R.id.due_date_clear_btn);
         projectNameTV = (TextView) findViewById(R.id.project_name);
+        projectTagsLL = (LinearLayout) findViewById(R.id.project_tags);
         assignedToTV = (TextView) findViewById(R.id.assigned_to);
         assignedToET = (EditText) findViewById(R.id.assigned_to_hidden);
         descriptionET = (EditText) findViewById(R.id.description);
@@ -124,20 +130,28 @@ public class StickiesNew extends SherlockActivity {
             sticky = db.findStickyByID(Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) ));
         }
 
-        if(sticky.id > 0){
+        if(sticky.project_id > 0) {
             current_project = db.findProjectByID(sticky.project_id);
-            projectNameTV.setText(current_project.name);
-        }
-        else if(intent.getStringExtra(Project.PROJECT_ID) != null)
-        {
+            // projectNameTV.setText(current_project.name);
+        } else if(intent.getStringExtra(Project.PROJECT_ID) != null) {
+            current_project = db.findProjectByID(Integer.parseInt( intent.getStringExtra(Project.PROJECT_ID) ));
 
-            current_project.id = Integer.parseInt( intent.getStringExtra(Project.PROJECT_ID) );
-            current_project.name = intent.getStringExtra(Project.PROJECT_NAME);
+            // current_project.id = Integer.parseInt( intent.getStringExtra(Project.PROJECT_ID) );
+            // current_project.name = intent.getStringExtra(Project.PROJECT_NAME);
             // current_project.color = intent.getStringExtra(Project.PROJECT_COLOR);
             // actionBar.setDisplayHomeAsUpEnabled(true);
             // actionBar.setTitle(current_project.name);
-            projectNameTV.setText(current_project.name);
+            // projectNameTV.setText(current_project.name);
             // actionBar.setTextColor(Color.parseColor(current_project.color));
+        }
+
+        projectNameTV.setText(current_project.name);
+        for(int i = 0; i < current_project.tags.length; i++) {
+            CheckBox tagCB = new CheckBox(getApplicationContext());
+            tagCB.setText(current_project.tags[i].name);
+            tagCB.setTextColor(Color.parseColor(current_project.tags[i].color));
+            tagCB.setChecked(true);
+            projectTagsLL.addView(tagCB);
         }
 
 
@@ -185,11 +199,20 @@ public class StickiesNew extends SherlockActivity {
 
             public void onClick(View view) {
                 String description = descriptionET.getText().toString();
-                String due_date = Integer.toString(mMonth + 1) + "/" + Integer.toString(mDay) + "/" + Integer.toString(mYear);
+                String due_date = (mDay == 0 ? "" : Integer.toString(mMonth + 1) + "/" + Integer.toString(mDay) + "/" + Integer.toString(mYear));
                 String owner_id = assignedToET.getText().toString();
                 String completed = (completedCB.isChecked() ? "1" : "0");
 
                 new CreateSticky().execute(Integer.toString(sticky.id), description, due_date, Integer.toString(current_project.id), owner_id, completed);
+            }
+        });
+
+        clearDate.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                mMonth = 0;
+                mDay = 0;
+                mYear = 0;
+                mDateDisplay.setText("");
             }
         });
 
@@ -218,7 +241,12 @@ public class StickiesNew extends SherlockActivity {
     protected Dialog onCreateDialog(int id) {
         switch (id) {
         case DATE_DIALOG_ID:
-            return new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay);
+            if(mDay == 0){
+                final Calendar c = Calendar.getInstance();
+                return new DatePickerDialog(this, mDateSetListener, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+            } else {
+                return new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay);
+            }
         }
         return null;
     }

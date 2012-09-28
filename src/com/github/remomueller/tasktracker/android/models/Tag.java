@@ -7,7 +7,9 @@ public class Tag {
 
     public int id;
     public String name;
+    public String description;
     public String color;
+    public int user_id;
 
     public Tag() {
         // For GSON deserialization

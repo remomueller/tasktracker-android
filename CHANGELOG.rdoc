@@ -4,6 +4,9 @@
   * Projects can now be created from the Projects page
   * Stickies can now be edited and deleted from the Sticky page
   * Stickies can now be marked/unmarked as completed
+  * Stickies due dates can now be set as blank
+    * NOTE: Stickies without due dates won't currently be available in the list views as these filter by date
+  * Stickies can now be tagged based on tags available for the specific project
 
 == 0.1.1
 

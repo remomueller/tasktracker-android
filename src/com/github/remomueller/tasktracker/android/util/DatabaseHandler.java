@@ -11,24 +11,31 @@ import android.util.Log;
 
 import com.github.remomueller.tasktracker.android.Project;
 import com.github.remomueller.tasktracker.android.Sticky;
+import com.github.remomueller.tasktracker.android.Tag;
 
 import java.util.ArrayList;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-    private static final String TAG = "TaskTrackerAndroid";
+    private static final String TAG                         = "TaskTrackerAndroid";
 
     // Database Version
-    private static final int DATABASE_VERSION = 2;
+    private static final int    DATABASE_VERSION            = 3;
 
     // Database Name
-    private static final String DATABASE_NAME = "android_api";
+    private static final String DATABASE_NAME               = "android_api";
+
+    private final static String DROP_LOGIN_TABLE            = "DROP TABLE IF EXISTS login";
+    private final static String DROP_PROJECTS_TABLE         = "DROP TABLE IF EXISTS projects";
+    private final static String DROP_STICKIES_TABLE         = "DROP TABLE IF EXISTS stickies";
+    private final static String DROP_STICKIES_TAGS_TABLE    = "DROP TABLE IF EXISTS stickies_tags";
+    private final static String DROP_TAGS_TABLE             = "DROP TABLE IF EXISTS tags";
 
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public String getVersion(){
+    public String getVersion() {
         return Integer.toString(DATABASE_VERSION);
     }
 
@@ -53,6 +60,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         migration0001(db);
         migration0002(db);
+        migration0003(db);
         // Add more migrations here
     }
 
@@ -60,23 +68,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if(oldVersion <= 0) oldVersion = 0;
-        for(int i = oldVersion + 1; i <= newVersion; i++){
+        for(int i = oldVersion + 1; i <= newVersion; i++) {
             if(i == 1) migration0001(db);
             if(i == 2) migration0002(db);
+            if(i == 3) migration0003(db);
             // Add more migrations here
         }
     }
 
     @Override
     public void onDowngrade (SQLiteDatabase db, int oldVersion, int newVersion) {
-        for(int i = oldVersion; i > newVersion; i--){
+        for(int i = oldVersion; i > newVersion; i--) {
             if(i == 1) rollback0001(db);
             if(i == 2) rollback0002(db);
+            if(i == 3) rollback0003(db);
             // Add more rollbacks here
         }
     }
 
-    private void migration0001(SQLiteDatabase db){
+    private void migration0001(SQLiteDatabase db) {
         String CREATE_LOGIN_TABLE = "CREATE TABLE login("
                 + "id INTEGER PRIMARY KEY,"
                 + "site_url TEXT,"
@@ -86,12 +96,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_LOGIN_TABLE);
     }
 
-    private void rollback0001(SQLiteDatabase db){
-        String DROP_LOGIN_TABLE = "DROP TABLE IF EXISTS login";
+    private void rollback0001(SQLiteDatabase db) {
         db.execSQL(DROP_LOGIN_TABLE);
     }
 
-    private void migration0002(SQLiteDatabase db){
+    private void migration0002(SQLiteDatabase db) {
         String CREATE_PROJECTS_TABLE = "CREATE TABLE projects("
                 + "android_id INTEGER PRIMARY KEY,"
                 + "id INTEGER UNIQUE,"
@@ -126,19 +135,42 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_STICKIES_TAGS_TABLE);
     }
 
-    private void rollback0002(SQLiteDatabase db){
-        String DROP_STICKIES_TAGS_TABLE = "DROP TABLE IF EXISTS stickies_tags";
-        String DROP_TAGS_TABLE = "DROP TABLE IF EXISTS tags";
-        String DROP_STICKIES_TABLE = "DROP TABLE IF EXISTS stickies";
-        String DROP_PROJECTS_TABLE = "DROP TABLE IF EXISTS projects";
-
+    private void rollback0002(SQLiteDatabase db) {
         db.execSQL(DROP_STICKIES_TAGS_TABLE);
         db.execSQL(DROP_TAGS_TABLE);
         db.execSQL(DROP_STICKIES_TABLE);
         db.execSQL(DROP_PROJECTS_TABLE);
     }
 
+    private void migration0003(SQLiteDatabase db) {
+        db.execSQL(DROP_PROJECTS_TABLE);
+        String CREATE_PROJECTS_TABLE = "CREATE TABLE projects("
+                + "android_id INTEGER PRIMARY KEY,"
+                + "id INTEGER UNIQUE,"
+                + "user_id INTEGER,"
+                + "name STRING,"
+                + "description TEXT,"
+                + "status STRING,"
+                + "start_date TEXT,"
+                + "end_date TEXT,"
+                + "color STRING,"
+                + "favorited INTEGER" + ")";
+        db.execSQL(CREATE_PROJECTS_TABLE);
+    }
+
+    private void rollback0003(SQLiteDatabase db) {
+        db.execSQL(DROP_PROJECTS_TABLE);
+        String CREATE_PROJECTS_TABLE = "CREATE TABLE projects("
+                + "android_id INTEGER PRIMARY KEY,"
+                + "id INTEGER UNIQUE,"
+                + "name STRING,"
+                + "description TEXT,"
+                + "color STRING" + ")";
+        db.execSQL(CREATE_PROJECTS_TABLE);
+    }
+
     public void addOrUpdateSticky(Sticky sticky) {
+        // Log.d(TAG, "Inserting Sticky " + sticky.name());
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -152,18 +184,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("due_date", sticky.due_date);
         values.put("completed", (sticky.completed ? "1" : "0"));
 
-        // Log.d(TAG, "Inserting Sticky " + sticky.name());
-
         db.insertWithOnConflict("stickies", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
     }
 
-    public Sticky findStickyByID(int id){
+    public Sticky findStickyByID(int id) {
         Sticky sticky = new Sticky();
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM stickies where stickies.id = " + Integer.toString(id) + " LIMIT 1";
+
         Cursor cursor = db.rawQuery(selectQuery, null);
-        // Move to first row
         cursor.moveToFirst();
         if(cursor.getCount() > 0) {
             sticky.id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
@@ -182,7 +212,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return sticky;
     }
 
-    public void deleteStickyByID(int id){
+    public void deleteStickyByID(int id) {
         Sticky sticky = new Sticky();
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM stickies where stickies.id = " + Integer.toString(id) + " LIMIT 1";
@@ -192,16 +222,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<Sticky> findAllStickies(String conditions){
+    public ArrayList<Sticky> findAllStickies(String conditions) {
         ArrayList<Sticky> stickies = new ArrayList<Sticky>();
 
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM stickies";
         if(conditions == null || conditions.equals("")) conditions = "1 = 1";
         selectQuery += " WHERE " + conditions;
-        // selectQuery += " ORDER BY name";
+
         Cursor cursor = db.rawQuery(selectQuery, null);
-        // Move to first row
         cursor.moveToFirst();
         while (cursor.isAfterLast() == false) {
             Sticky sticky = new Sticky();
@@ -226,80 +255,139 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Projects
 
     public void addOrUpdateProject(Project project) {
+        // Log.d(TAG, "Inserting Project " + project.name);
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put("id", Integer.toString(project.id));
-        // values.put("user_id", Integer.toString(project.user_id)); // Put in with migration 3
+        values.put("user_id", Integer.toString(project.user_id));
         values.put("name", project.name);
         values.put("description", project.description);
-        // values.put("status", project.status);         // Put in with migration 3
-        // values.put("start_date", project.start_date); // Put in with migration 3
-        // values.put("end_date", project.end_date);     // Put in with migration 3
+        values.put("status", project.status);
+        values.put("start_date", project.start_date);
+        values.put("end_date", project.end_date);
         values.put("color", project.color);
-
-        // Log.d(TAG, "Inserting Project " + project.name);
+        values.put("favorited", (project.favorited ? "1" : "0"));
 
         db.insertWithOnConflict("projects", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
+
+        for(int i = 0; i < project.tags.length; i++){
+            ContentValues tag_values = new ContentValues();
+
+            tag_values.put("id", Integer.toString(project.tags[i].id));
+            tag_values.put("name", project.tags[i].name);
+            tag_values.put("description", project.tags[i].description);
+            tag_values.put("color", project.tags[i].color);
+            tag_values.put("user_id", Integer.toString(project.tags[i].user_id));
+            tag_values.put("project_id", Integer.toString(project.id));
+
+            db.insertWithOnConflict("tags", null, tag_values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
+        }
+
+
         db.close();
     }
 
-    public Project findProjectByID(int id){
+    public Project findProjectByID(int id) {
         Project project = new Project();
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM projects where projects.id = " + Integer.toString(id) + " LIMIT 1";
+
         Cursor cursor = db.rawQuery(selectQuery, null);
-        // Move to first row
         cursor.moveToFirst();
         if(cursor.getCount() > 0) {
             project.id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
-            // project.user_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("user_id"))); // Put in with migration 3
+            project.user_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("user_id")));
             project.name = cursor.getString(cursor.getColumnIndex("name"));
             project.description = cursor.getString(cursor.getColumnIndex("description"));
-            // project.status = cursor.getString(cursor.getColumnIndex("status"));          // Put in with migration 3
-            // project.start_date = cursor.getString(cursor.getColumnIndex("start_date"));  // Put in with migration 3
-            // project.end_date = cursor.getString(cursor.getColumnIndex("end_date"));      // Put in with migration 3
+            project.status = cursor.getString(cursor.getColumnIndex("status"));
+            project.start_date = cursor.getString(cursor.getColumnIndex("start_date"));
+            project.end_date = cursor.getString(cursor.getColumnIndex("end_date"));
             project.color = cursor.getString(cursor.getColumnIndex("color"));
+            project.favorited = cursor.getString(cursor.getColumnIndex("favorited")).equals("1");
         }
         cursor.close();
         db.close();
 
+        project.tags = findAllTagsArray("project_id = " + Integer.toString(project.id));
+
         return project;
     }
 
-    public ArrayList<Project> findAllProjects(String conditions){
+    public ArrayList<Project> findAllProjects(String conditions) {
         ArrayList<Project> projects = new ArrayList<Project>();
 
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM projects";
         if(conditions == null || conditions.equals("")) conditions = "1 = 1";
         selectQuery += " WHERE " + conditions;
-        selectQuery += " ORDER BY name";
+        selectQuery += " ORDER BY favorited DESC, name";
+        selectQuery += " COLLATE NOCASE";
+
         Cursor cursor = db.rawQuery(selectQuery, null);
-        // Move to first row
         cursor.moveToFirst();
         while (cursor.isAfterLast() == false) {
             Project project = new Project();
             project.id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
-            // project.user_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("user_id"))); // Put in with migration 3
+            project.user_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("user_id")));
             project.name = cursor.getString(cursor.getColumnIndex("name"));
             project.description = cursor.getString(cursor.getColumnIndex("description"));
-            // project.status = cursor.getString(cursor.getColumnIndex("status"));          // Put in with migration 3
-            // project.start_date = cursor.getString(cursor.getColumnIndex("start_date"));  // Put in with migration 3
-            // project.end_date = cursor.getString(cursor.getColumnIndex("end_date"));      // Put in with migration 3
+            project.status = cursor.getString(cursor.getColumnIndex("status"));
+            project.start_date = cursor.getString(cursor.getColumnIndex("start_date"));
+            project.end_date = cursor.getString(cursor.getColumnIndex("end_date"));
             project.color = cursor.getString(cursor.getColumnIndex("color"));
+            project.favorited = cursor.getString(cursor.getColumnIndex("favorited")).equals("1");
             projects.add(project);
             cursor.moveToNext();
         }
         cursor.close();
         db.close();
 
+        for(int i = 0; i < projects.size(); i++){
+            projects.get(i).tags = findAllTagsArray("project_id = " + Integer.toString(projects.get(i).id));
+        }
+
         return projects;
     }
 
-    /**
-     * Storing user details in database
-     * */
+    public Tag[] findAllTagsArray(String conditions) {
+        ArrayList<Tag> tags = findAllTags(conditions);
+        Tag[] array = new Tag[tags.size()];
+        for(int i = 0; i < tags.size(); i++) {
+            array[i] = tags.get(i);
+        }
+        return array;
+    }
+
+    public ArrayList<Tag> findAllTags(String conditions) {
+        ArrayList<Tag> tags = new ArrayList<Tag>();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM tags";
+        if(conditions == null || conditions.equals("")) conditions = "1 = 1";
+        selectQuery += " WHERE " + conditions;
+        selectQuery += " ORDER BY name";
+        selectQuery += " COLLATE NOCASE";
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        while (cursor.isAfterLast() == false) {
+            Tag tag = new Tag();
+            tag.id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
+            tag.user_id = Integer.parseInt(cursor.getString(cursor.getColumnIndex("user_id")));
+            tag.name = cursor.getString(cursor.getColumnIndex("name"));
+            tag.description = cursor.getString(cursor.getColumnIndex("description"));
+            tag.color = cursor.getString(cursor.getColumnIndex("color"));
+            tags.add(tag);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+
+        return tags;
+    }
+
+    // Store Current User Information
     public void addLogin(int id, String first_name, String last_name, String email, String password, String site_url, String authentication_token) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -307,22 +395,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("rowid", "1"); // Always adding into the first row
         // values.put("id", Integer.toString(id));
         values.put("cookie", Integer.toString(id)); // Placing
-        // values.put("first_name", first_name); // Put in with migration 3
-        // values.put("last_name", last_name); // Put in with migration 3
+        // values.put("first_name", first_name); // Put in with migration 4
+        // values.put("last_name", last_name); // Put in with migration 4
         values.put("email", email);
         values.put("password", password);
         values.put("site_url", site_url);
-        // values.put("authentication_token", authentication_token); // Put in with migration 3
-
+        // values.put("authentication_token", authentication_token); // Put in with migration 4
 
         db.insertWithOnConflict("login", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
-        db.close(); // Closing database connection
+        db.close();
     }
 
-    /**
-     * Getting user data from database
-     * */
-    public HashMap<String, String> getLogin(){
+    // Retrieve Current User
+    public HashMap<String, String> getLogin() {
         HashMap<String,String> user = new HashMap<String,String>();
         String selectQuery = "SELECT * FROM login";
 
@@ -330,26 +415,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row
         cursor.moveToFirst();
-        if(cursor.getCount() > 0){
+        if(cursor.getCount() > 0) {
             user.put("id", cursor.getString(0));
             user.put("site_url", cursor.getString(1));
             user.put("email", cursor.getString(2));
             user.put("password", cursor.getString(3));
             user.put("cookie", cursor.getString(4)); // user.put("cookie", cursor.getString(4));
-            user.put("first_name", ""); // user.put("first_name", cursor.getString(5)); // Put in with migration 3
-            user.put("last_name", ""); // user.put("last_name", cursor.getString(6)); // Put in with migration 3
-            user.put("authentication_token", ""); // user.put("authentication_token", cursor.getString(7)); // Put in with migration 3
+            user.put("first_name", ""); // user.put("first_name", cursor.getString(5)); // Put in with migration 4
+            user.put("last_name", ""); // user.put("last_name", cursor.getString(6)); // Put in with migration 4
+            user.put("authentication_token", ""); // user.put("authentication_token", cursor.getString(7)); // Put in with migration 4
         }
         cursor.close();
         db.close();
-        // return user
+
         return user;
     }
 
-    /**
-     * Getting user login status
-     * return true if rows are there in table
-     * */
+    // Check if Current User is signed in
     public int getRowCount() {
         String countQuery = "SELECT * FROM login WHERE password IS NOT NULL and password != ''";
         SQLiteDatabase db = this.getWritableDatabase();
@@ -358,24 +440,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         cursor.close();
 
-        // return row count
         return rowCount;
     }
 
-    /**
-     * Re crate database
-     * Delete all tables and create them again
-     * */
-    // public void resetTables(){
-    //     SQLiteDatabase db = this.getWritableDatabase();
-    //     // Delete All Rows
-    //     db.delete("login", null, null);
-    //     db.close();
-    // }
-
     // Logout the current_user if one exists
     // Set password to NULL.
-    public void resetLogin(String email, String site_url){
+    public void resetLogin(String email, String site_url) {
         if(email == null) email = "";
         if(site_url == null) site_url = "";
 

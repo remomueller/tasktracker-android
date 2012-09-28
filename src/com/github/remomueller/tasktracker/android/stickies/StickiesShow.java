@@ -157,15 +157,15 @@ public class StickiesShow extends SherlockFragmentActivity {
 
         // int position = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_POSITION) );
 
-        // Hopefully won't be needed in future and can access from database
-        if(sticky == null || sticky.id == 0){
-            sticky = new Sticky();
-            sticky.id = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) );
-            sticky.description = intent.getStringExtra(Sticky.STICKY_DESCRIPTION);
-            sticky.group_description = intent.getStringExtra(Sticky.STICKY_GROUP_DESCRIPTION);
-            sticky.due_date = intent.getStringExtra(Sticky.STICKY_DUE_DATE);
-            sticky.completed = Boolean.parseBoolean(intent.getStringExtra(Sticky.STICKY_COMPLETED));
-        }
+        // // Hopefully won't be needed in future and can access from database
+        // if(sticky == null || sticky.id == 0){
+        //     sticky = new Sticky();
+        //     sticky.id = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) );
+        //     sticky.description = intent.getStringExtra(Sticky.STICKY_DESCRIPTION);
+        //     sticky.group_description = intent.getStringExtra(Sticky.STICKY_GROUP_DESCRIPTION);
+        //     sticky.due_date = intent.getStringExtra(Sticky.STICKY_DUE_DATE);
+        //     sticky.completed = Boolean.parseBoolean(intent.getStringExtra(Sticky.STICKY_COMPLETED));
+        // }
 
         current_project = db.findProjectByID(sticky.project_id);
 

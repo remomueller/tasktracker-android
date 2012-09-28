@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.widget.Toast;
+import android.view.Gravity;
 
 // From libs directory
 import org.apache.commons.io.IOUtils;
@@ -129,7 +131,16 @@ public class ProjectsIndex extends SherlockActivity {
                 // intent.putExtra(Project.PROJECT_COLOR, project.color);
                 startActivity(intent);
             }
+        });
 
+        list.setOnItemLongClickListener(new OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Project project = projects.get(position);
+                Toast toast = Toast.makeText(getApplicationContext(), "Project " + project.name + " selected.\nTags: " + project.tag_names(), Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
+                return true;
+            }
         });
 
         AsyncRequestFinishedListener finishedListener = new AsyncRequestFinishedListener()

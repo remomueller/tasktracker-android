@@ -23,21 +23,36 @@
             android:capitalize="sentences"
             />
 
-
         <!--  Due Date Label -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Due Date" />
 
-        <TextView android:id="@+id/due_date_show"
+        <TextView
+            android:id="@+id/due_date_show"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <Button android:id="@+id/due_date_btn"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/due_date_btn"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Choose Date"/>
+                android:text="Choose Date"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/due_date_clear_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear"/>
+
+        </LinearLayout>
 
         <!--  Project Label -->
         <TextView
@@ -49,6 +64,20 @@
             android:id="@+id/project_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <!--  Project Tags Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tags" />
+
+        <LinearLayout
+            android:id="@+id/project_tags"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dip" >
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
