@@ -12,8 +12,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.widget.TextView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.view.View;
 import android.util.Log;
+
+import android.graphics.Typeface;
 
 import android.widget.Toast;
 import android.view.Gravity;
@@ -36,6 +40,8 @@ public class StickiesShow extends SherlockFragmentActivity {
 
     Project current_project;
     Sticky sticky;
+
+    private LinearLayout stickyTagsLL;
 
     DatabaseHandler db;
 
@@ -172,11 +178,44 @@ public class StickiesShow extends SherlockFragmentActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         if (current_project.id > 0) actionBar.setTitle(current_project.name);
 
-        // Hopefully won't be needed in future and can access from database
-        Tag tag = new Tag();
-        tag.id = Integer.parseInt( intent.getStringExtra(Tag.TAG_ID) );
-        tag.name = intent.getStringExtra(Tag.TAG_NAME);
-        tag.color = intent.getStringExtra(Tag.TAG_COLOR);
+        stickyTagsLL = (LinearLayout) findViewById(R.id.sticky_tags);
+
+        for(int i = 0; i < sticky.tags.length; i++) {
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
+                (Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM));
+            // lp.setPadding(1, 2, 1, 2);
+            lp.setMargins(0, 2, 0, 2);
+
+            TextView tagTV = new TextView(getApplicationContext());
+            tagTV.setText(sticky.tags[i].name);
+            tagTV.setTypeface(null, Typeface.BOLD);
+            tagTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
+            tagTV.setCompoundDrawablePadding(2);
+            // tagTV.setTextStyle("bold");
+            // tagTV.setMarginLeft("2px");
+            // tagTV.setMarginRight("2px");
+            // tagTV.setShadowDx("1.2");
+            // tagTV.setShadowColor(Color.parseColor("#333333"));
+            // tagTV.setShadowRadius("1.2");
+            tagTV.setBackgroundColor(Color.parseColor(sticky.tags[i].color));
+            tagTV.setTextColor(Color.parseColor("#ffffff"));
+            stickyTagsLL.addView(tagTV, lp);
+        }
+
+        // // Hopefully won't be needed in future and can access from database
+        // Tag tag = new Tag();
+        // tag.id = Integer.parseInt( intent.getStringExtra(Tag.TAG_ID) );
+        // tag.name = intent.getStringExtra(Tag.TAG_NAME);
+        // tag.color = intent.getStringExtra(Tag.TAG_COLOR);
+
+        // TextView single_tag = (TextView) findViewById(R.id.single_tag);
+        // single_tag.setText(tag.name);
+        // if(tag.id != 0){
+        //     single_tag.setBackgroundColor(Color.parseColor(tag.color));
+        // }else{
+        //     single_tag.setVisibility(View.GONE);
+        // }
 
 
 
@@ -194,14 +233,6 @@ public class StickiesShow extends SherlockFragmentActivity {
         description.setText(sticky.full_description());
 
         due_date.setText(sticky.short_due_date());
-
-        TextView single_tag = (TextView) findViewById(R.id.single_tag);
-        single_tag.setText(tag.name);
-        if(tag.id != 0){
-            single_tag.setBackgroundColor(Color.parseColor(tag.color));
-        }else{
-            single_tag.setVisibility(View.GONE);
-        }
 
     }
 }

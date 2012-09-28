@@ -88,6 +88,7 @@ public class StickiesNew extends SherlockActivity {
 
     private TextView projectNameTV;
     private LinearLayout projectTagsLL;
+    private CheckBox[] projectTagsCBs;
 
     Project current_project;
     Sticky sticky;
@@ -146,12 +147,19 @@ public class StickiesNew extends SherlockActivity {
         }
 
         projectNameTV.setText(current_project.name);
+
+        projectTagsCBs = new CheckBox[current_project.tags.length];
+
         for(int i = 0; i < current_project.tags.length; i++) {
             CheckBox tagCB = new CheckBox(getApplicationContext());
             tagCB.setText(current_project.tags[i].name);
             tagCB.setTextColor(Color.parseColor(current_project.tags[i].color));
-            tagCB.setChecked(true);
+            for(int j = 0; j < sticky.tags.length; j++) {
+                if(sticky.tags[j].id == current_project.tags[i].id)
+                    tagCB.setChecked(true);
+            }
             projectTagsLL.addView(tagCB);
+            projectTagsCBs[i] = tagCB;
         }
 
 
@@ -202,8 +210,14 @@ public class StickiesNew extends SherlockActivity {
                 String due_date = (mDay == 0 ? "" : Integer.toString(mMonth + 1) + "/" + Integer.toString(mDay) + "/" + Integer.toString(mYear));
                 String owner_id = assignedToET.getText().toString();
                 String completed = (completedCB.isChecked() ? "1" : "0");
+                Tag[] tags = new Tag[current_project.tags.length];
+                for(int i = 0; i < current_project.tags.length; i++) {
+                    if(projectTagsCBs[i].isChecked())
+                        tags[i] = current_project.tags[i];
+                }
 
-                new CreateSticky().execute(Integer.toString(sticky.id), description, due_date, Integer.toString(current_project.id), owner_id, completed);
+
+                new CreateSticky(tags).execute(Integer.toString(sticky.id), description, due_date, Integer.toString(current_project.id), owner_id, completed);
             }
         });
 
@@ -252,6 +266,13 @@ public class StickiesNew extends SherlockActivity {
     }
 
     private class CreateSticky extends AsyncTask<String, Void, String> {
+
+        private Tag[] tags;
+
+        public CreateSticky(Tag[] tags) {
+            this.tags = tags;
+        }
+
         @Override
         protected String doInBackground(String... params) {
             try {
@@ -262,6 +283,7 @@ public class StickiesNew extends SherlockActivity {
                 sticky.project_id = Integer.parseInt(params[3]);
                 sticky.owner_id = Integer.parseInt(params[4]);
                 sticky.completed = params[5].equals("1");
+                sticky.tags = tags;
                 return createSticky(sticky);
             } catch (IOException e) {
                 return "Unable to Connect: Make sure you have an active network connection." + e;
@@ -399,6 +421,12 @@ public class StickiesNew extends SherlockActivity {
             params += "&" + URLEncoder.encode("sticky[project_id]", "UTF-8") + "=" + URLEncoder.encode(Integer.toString(sticky.project_id), "UTF-8");
         if(sticky.owner_id > 0)
             params += "&" + URLEncoder.encode("sticky[owner_id]", "UTF-8") + "=" + URLEncoder.encode(Integer.toString(sticky.owner_id), "UTF-8");
+        for(int i = 0; i < sticky.tags.length; i++) {
+            if(sticky.tags[i] != null)
+                params += "&" + URLEncoder.encode("sticky[tag_ids][]", "UTF-8") + "=" + URLEncoder.encode(Integer.toString(sticky.tags[i].id), "UTF-8");
+        }
+
+
 
         URL url;
         if (sticky.id > 0) {

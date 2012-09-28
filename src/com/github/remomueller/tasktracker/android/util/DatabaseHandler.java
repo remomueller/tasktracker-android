@@ -184,6 +184,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("due_date", sticky.due_date);
         values.put("completed", (sticky.completed ? "1" : "0"));
 
+        for(int i = 0; i < sticky.tags.length; i++){
+            ContentValues tag_values = new ContentValues();
+
+            tag_values.put("id", Integer.toString(sticky.tags[i].id));
+            tag_values.put("name", sticky.tags[i].name);
+            tag_values.put("description", sticky.tags[i].description);
+            tag_values.put("color", sticky.tags[i].color);
+            tag_values.put("user_id", Integer.toString(sticky.tags[i].user_id));
+            tag_values.put("project_id", Integer.toString(sticky.id));
+
+            db.insertWithOnConflict("tags", null, tag_values, android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE); // Ignore since it already exists... Only updated when projects are refreshed
+
+            ContentValues sticky_tag_values = new ContentValues();
+            sticky_tag_values.put("sticky_id", Integer.toString(sticky.id));
+            sticky_tag_values.put("tag_id", Integer.toString(sticky.tags[i].id));
+
+            db.insertWithOnConflict("stickies_tags", null, sticky_tag_values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
+        }
+
         db.insertWithOnConflict("stickies", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
     }
@@ -208,6 +227,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         cursor.close();
         db.close();
+
+        sticky.tags = findAllTagsArray("tags.id IN (select stickies_tags.tag_id from stickies_tags where stickies_tags.sticky_id = " + Integer.toString(sticky.id) + ")");
 
         return sticky;
     }
@@ -343,9 +364,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
 
-        for(int i = 0; i < projects.size(); i++){
-            projects.get(i).tags = findAllTagsArray("project_id = " + Integer.toString(projects.get(i).id));
-        }
+        // Temporarily removed due to performance. Use individual findProjectByID if you want to get project tags also
+        // for(int i = 0; i < projects.size(); i++){
+        //     projects.get(i).tags = findAllTagsArray("project_id = " + Integer.toString(projects.get(i).id));
+        // }
 
         return projects;
     }

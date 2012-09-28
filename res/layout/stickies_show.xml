@@ -16,24 +16,6 @@
         android:textSize="14sp"
         android:textStyle="bold"/>
 
-    <!-- Sticky Description -->
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/sticky_id"
-        android:layout_marginTop="16dp"
-        >
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/sticky_id"
-        android:textColor="#2C2C2C"
-        android:textSize="22sp"
-        android:layout_marginTop="1dip" />
-
-    </ScrollView>
-
     <!-- Sticky Due Date -->
     <TextView
         android:id="@+id/due_date"
@@ -47,7 +29,37 @@
         android:textSize="14sp"
         android:textStyle="bold"/>
 
-    <TextView
+    <!-- Sticky Description -->
+    <ScrollView
+        android:id="@+id/scroll_description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sticky_id"
+        android:layout_marginTop="16dp"
+        >
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sticky_id"
+            android:textColor="#2C2C2C"
+            android:textSize="22sp"
+            android:layout_marginTop="1dip" />
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/sticky_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dip"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:padding="10dip" >
+    </LinearLayout>
+
+<!--     <TextView
         android:id="@+id/single_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,6 +76,6 @@
         android:shadowDx="1.2"
         android:shadowColor="#333"
         android:shadowRadius="1.2"
-        android:background="@android:color/transparent" />
+        android:background="@android:color/transparent" /> -->
 
 </RelativeLayout>

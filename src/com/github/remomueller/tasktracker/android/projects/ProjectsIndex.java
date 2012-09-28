@@ -136,7 +136,7 @@ public class ProjectsIndex extends SherlockActivity {
         list.setOnItemLongClickListener(new OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Project project = projects.get(position);
-                Toast toast = Toast.makeText(getApplicationContext(), "Project " + project.name + " selected.\nTags: " + project.tag_names(), Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getApplicationContext(), "Project " + project.name + " selected.", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
                 toast.show();
                 return true;
