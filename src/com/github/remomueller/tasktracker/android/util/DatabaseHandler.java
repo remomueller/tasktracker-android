@@ -184,10 +184,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("due_date", sticky.due_date);
         values.put("completed", (sticky.completed ? "1" : "0"));
 
-        String where = "sticky_id = ?";
-        String[] whereArgs = { Integer.toString(sticky.id) };
-
-        db.delete("stickies_tags", where, whereArgs);
+        db.delete("stickies_tags", "sticky_id = ?", new String[] { Integer.toString(sticky.id) });
 
         for(int i = 0; i < sticky.tags.length; i++){
             ContentValues tag_values = new ContentValues();
