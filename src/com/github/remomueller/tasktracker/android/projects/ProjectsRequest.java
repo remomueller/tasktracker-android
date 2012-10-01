@@ -40,12 +40,12 @@ public class ProjectsRequest extends AsyncTask<Void, Void, ArrayList<Project>> {
 
     private WebRequest webRequest;
     private Context context;
-    private String method;
-    private String path;
-    private String params;
+    // private String method;
+    // private String path;
+    // private String params;
     private String conditions;
-    private boolean doOutput;
-    private boolean doInput;
+    // private boolean doOutput;
+    // private boolean doInput;
     private final ProjectsRequestFinishedListener finishedListener;
 
     DatabaseHandler db;
