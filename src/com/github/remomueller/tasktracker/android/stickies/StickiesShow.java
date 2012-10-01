@@ -161,22 +161,19 @@ public class StickiesShow extends SherlockFragmentActivity {
         db = new DatabaseHandler(getApplicationContext());
         sticky = db.findStickyByID(Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) ));
 
-        // int position = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_POSITION) );
+        if(intent.getStringExtra(Project.PROJECT_ID) != null) {
+            current_project = db.findProjectByID(Integer.parseInt( intent.getStringExtra(Project.PROJECT_ID) ));
+        }
 
-        // // Hopefully won't be needed in future and can access from database
-        // if(sticky == null || sticky.id == 0){
-        //     sticky = new Sticky();
-        //     sticky.id = Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) );
-        //     sticky.description = intent.getStringExtra(Sticky.STICKY_DESCRIPTION);
-        //     sticky.group_description = intent.getStringExtra(Sticky.STICKY_GROUP_DESCRIPTION);
-        //     sticky.due_date = intent.getStringExtra(Sticky.STICKY_DUE_DATE);
-        //     sticky.completed = Boolean.parseBoolean(intent.getStringExtra(Sticky.STICKY_COMPLETED));
-        // }
-
-        current_project = db.findProjectByID(sticky.project_id);
+        Project project = db.findProjectByID(sticky.project_id);
 
         actionBar.setDisplayHomeAsUpEnabled(true);
-        if (current_project.id > 0) actionBar.setTitle(current_project.name);
+
+        if (current_project.id > 0) {
+            actionBar.setTitle(current_project.name);
+        } else if (project.id > 0) {
+            actionBar.setTitle(project.name);
+        }
 
         stickyTagsLL = (LinearLayout) findViewById(R.id.sticky_tags);
 

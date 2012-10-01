@@ -132,17 +132,8 @@ public class StickiesNew extends SherlockActivity {
 
         if(sticky.project_id > 0) {
             current_project = db.findProjectByID(sticky.project_id);
-            // projectNameTV.setText(current_project.name);
         } else if(intent.getStringExtra(Project.PROJECT_ID) != null) {
             current_project = db.findProjectByID(Integer.parseInt( intent.getStringExtra(Project.PROJECT_ID) ));
-
-            // current_project.id = Integer.parseInt( intent.getStringExtra(Project.PROJECT_ID) );
-            // current_project.name = intent.getStringExtra(Project.PROJECT_NAME);
-            // current_project.color = intent.getStringExtra(Project.PROJECT_COLOR);
-            // actionBar.setDisplayHomeAsUpEnabled(true);
-            // actionBar.setTitle(current_project.name);
-            // projectNameTV.setText(current_project.name);
-            // actionBar.setTextColor(Color.parseColor(current_project.color));
         }
 
         projectNameTV.setText(current_project.name);
