@@ -184,6 +184,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("due_date", sticky.due_date);
         values.put("completed", (sticky.completed ? "1" : "0"));
 
+        String where = "sticky_id = ?";
+        String[] whereArgs = { Integer.toString(sticky.id) };
+
+        db.delete("stickies_tags", where, whereArgs);
+
         for(int i = 0; i < sticky.tags.length; i++){
             ContentValues tag_values = new ContentValues();
 
@@ -269,6 +274,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         cursor.close();
         db.close();
+
+        for(int i = 0; i < stickies.size(); i++){
+            stickies.get(i).tags = findAllTagsArray("tags.id IN (select stickies_tags.tag_id from stickies_tags where stickies_tags.sticky_id = " + Integer.toString(stickies.get(i).id) + ")");
+        }
 
         return stickies;
     }
