@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.github.remomueller.tasktracker.android.TaskTracker;
 import com.github.remomueller.tasktracker.android.Project;
 import com.github.remomueller.tasktracker.android.Sticky;
 import com.github.remomueller.tasktracker.android.Tag;
@@ -35,13 +36,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    // public void onConfigure (SQLiteDatabase db) {
+    //     super.onConfigure(db);
+    //     db.enableWriteAheadLogging();
+    // }
+
     public String getVersion() {
         return Integer.toString(DATABASE_VERSION);
     }
 
     public ArrayList<Object> getTables()
     {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
         ArrayList<Object> tableList = new ArrayList<Object>();
         String SQL_GET_ALL_TABLES = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
         Cursor cursor = db.rawQuery(SQL_GET_ALL_TABLES, null);
@@ -51,7 +57,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.moveToNext();
         }
         cursor.close();
-        db.close();
+        // db.close();
         return tableList;
     }
 
@@ -171,7 +177,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void addOrUpdateSticky(Sticky sticky) {
         // Log.d(TAG, "Inserting Sticky " + sticky.name());
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
+
 
         ContentValues values = new ContentValues();
         values.put("id", Integer.toString(sticky.id));
@@ -206,12 +213,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
 
         db.insertWithOnConflict("stickies", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
-        db.close();
+        // db.close();
     }
 
     public Sticky findStickyByID(int id) {
         Sticky sticky = new Sticky();
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
         String selectQuery = "SELECT * FROM stickies where stickies.id = " + Integer.toString(id) + " LIMIT 1";
 
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -228,7 +235,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             sticky.completed = cursor.getString(cursor.getColumnIndex("completed")).equals("1");
         }
         cursor.close();
-        db.close();
+        // db.close();
 
         sticky.tags = findAllTagsArray("tags.id IN (select stickies_tags.tag_id from stickies_tags where stickies_tags.sticky_id = " + Integer.toString(sticky.id) + ")");
 
@@ -237,18 +244,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void deleteStickyByID(int id) {
         Sticky sticky = new Sticky();
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
         String selectQuery = "SELECT * FROM stickies where stickies.id = " + Integer.toString(id) + " LIMIT 1";
 
         db.delete("stickies", "id = ?", new String[] { Integer.toString(id) });
 
-        db.close();
+        // db.close();
     }
 
     public ArrayList<Sticky> findAllStickies(String conditions) {
         ArrayList<Sticky> stickies = new ArrayList<Sticky>();
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
         String selectQuery = "SELECT * FROM stickies";
         if(conditions == null || conditions.equals("")) conditions = "1 = 1";
         selectQuery += " WHERE " + conditions;
@@ -270,7 +277,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.moveToNext();
         }
         cursor.close();
-        db.close();
+        // db.close();
 
         for(int i = 0; i < stickies.size(); i++){
             stickies.get(i).tags = findAllTagsArray("tags.id IN (select stickies_tags.tag_id from stickies_tags where stickies_tags.sticky_id = " + Integer.toString(stickies.get(i).id) + ")");
@@ -283,7 +290,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void addOrUpdateProject(Project project) {
         // Log.d(TAG, "Inserting Project " + project.name);
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
 
         ContentValues values = new ContentValues();
         values.put("id", Integer.toString(project.id));
@@ -312,12 +319,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
 
 
-        db.close();
+        // db.close();
     }
 
     public Project findProjectByID(int id) {
         Project project = new Project();
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
         String selectQuery = "SELECT * FROM projects where projects.id = " + Integer.toString(id) + " LIMIT 1";
 
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -334,7 +341,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             project.favorited = cursor.getString(cursor.getColumnIndex("favorited")).equals("1");
         }
         cursor.close();
-        db.close();
+        // db.close();
 
         project.tags = findAllTagsArray("project_id = " + Integer.toString(project.id));
 
@@ -344,7 +351,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<Project> findAllProjects(String conditions) {
         ArrayList<Project> projects = new ArrayList<Project>();
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
         String selectQuery = "SELECT * FROM projects";
         if(conditions == null || conditions.equals("")) conditions = "1 = 1";
         selectQuery += " WHERE " + conditions;
@@ -368,7 +375,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.moveToNext();
         }
         cursor.close();
-        db.close();
+        // db.close();
 
         // Temporarily removed due to performance. Use individual findProjectByID if you want to get project tags also
         // for(int i = 0; i < projects.size(); i++){
@@ -390,7 +397,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<Tag> findAllTags(String conditions) {
         ArrayList<Tag> tags = new ArrayList<Tag>();
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
         String selectQuery = "SELECT * FROM tags";
         if(conditions == null || conditions.equals("")) conditions = "1 = 1";
         selectQuery += " WHERE " + conditions;
@@ -410,14 +417,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.moveToNext();
         }
         cursor.close();
-        db.close();
+        // db.close();
 
         return tags;
     }
 
     // Store Current User Information
     public void addLogin(int id, String first_name, String last_name, String email, String password, String site_url, String authentication_token) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
 
         ContentValues values = new ContentValues();
         values.put("rowid", "1"); // Always adding into the first row
@@ -431,7 +438,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // values.put("authentication_token", authentication_token); // Put in with migration 4
 
         db.insertWithOnConflict("login", null, values, android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE);
-        db.close();
+        // db.close();
     }
 
     // Retrieve Current User
@@ -439,7 +446,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         HashMap<String,String> user = new HashMap<String,String>();
         String selectQuery = "SELECT * FROM login";
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row
         cursor.moveToFirst();
@@ -454,7 +461,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             user.put("authentication_token", ""); // user.put("authentication_token", cursor.getString(7)); // Put in with migration 4
         }
         cursor.close();
-        db.close();
+        // db.close();
 
         return user;
     }
@@ -462,11 +469,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Check if Current User is signed in
     public int getRowCount() {
         String countQuery = "SELECT * FROM login WHERE password IS NOT NULL and password != ''";
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
         Cursor cursor = db.rawQuery(countQuery, null);
         int rowCount = cursor.getCount();
-        db.close();
         cursor.close();
+        // db.close();
 
         return rowCount;
     }
@@ -479,7 +486,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         ArrayList<Object> tables = getTables();
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = TaskTracker.db();
 
         ContentValues values = new ContentValues();
         values.put("rowid", "1"); // Always adding into the first row
@@ -495,7 +502,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if(tables.contains("stickies_tags")) db.delete("stickies_tags", null, null);
         if(tables.contains("tags")) db.delete("tags", null, null);
 
-        db.close();
+        // db.close();
     }
 
 }

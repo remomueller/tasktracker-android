@@ -48,7 +48,7 @@ public class StickiesRequest extends AsyncTask<Void, Void, ArrayList<Sticky>> {
     private boolean doInput;
     private final StickiesRequestFinishedListener finishedListener;
 
-    DatabaseHandler db;
+    // DatabaseHandler db;
 
     // String params = URLEncoder.encode("project[name]", "UTF-8") + "=" + URLEncoder.encode(project.name, "UTF-8");
     // params += "&" + URLEncoder.encode("project[description]", "UTF-8") + "=" + URLEncoder.encode(project.description, "UTF-8");
@@ -63,7 +63,7 @@ public class StickiesRequest extends AsyncTask<Void, Void, ArrayList<Sticky>> {
     public StickiesRequest(Context context, String method, String path, String params, String conditions, StickiesRequestFinishedListener finishedListener) {
         this.webRequest = new WebRequest(context, method, path, params);
         this.conditions = conditions;
-        this.db = new DatabaseHandler(context);
+        // this.db = new DatabaseHandler(context);
         this.finishedListener = finishedListener;
     }
 
@@ -84,6 +84,8 @@ public class StickiesRequest extends AsyncTask<Void, Void, ArrayList<Sticky>> {
             } catch (JsonParseException e) {
                 array = new Sticky[0];
             }
+
+            DatabaseHandler db = new DatabaseHandler(context);
 
             for(int i = 0; i < array.length; i++) {
                 db.addOrUpdateSticky(array[i]);

@@ -126,8 +126,7 @@ public class StickiesNew extends SherlockActivity {
         current_project = new Project();
         sticky = new Sticky();
 
-        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-        if(intent.getStringExtra(Sticky.STICKY_ID) != null){
+        if(intent.getStringExtra(Sticky.STICKY_ID) != null) {
             sticky = db.findStickyByID(Integer.parseInt( intent.getStringExtra(Sticky.STICKY_ID) ));
         }
 
@@ -255,7 +254,7 @@ public class StickiesNew extends SherlockActivity {
     protected Dialog onCreateDialog(int id) {
         switch (id) {
         case DATE_DIALOG_ID:
-            if(mDay == 0){
+            if(mDay == 0) {
                 final Calendar c = Calendar.getInstance();
                 return new DatePickerDialog(this, mDateSetListener, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
             } else {
@@ -300,22 +299,22 @@ public class StickiesNew extends SherlockActivity {
             if(json != null)
             {
                 Log.d(TAG, "[StickyCreate] Response: " + json);
-                if(json.equals("{\"description\":[\"can't be blank\"]}")){
+                if(json.equals("{\"description\":[\"can't be blank\"]}")) {
                     message = "Description can't be blank";
                     error_found = true;
-                } else if(json.equals("{\"project_id\":[\"can't be blank\"]}") || json.equals("{\"description\":[\"can't be blank\"],\"project_id\":[\"can't be blank\"]}")){
+                } else if(json.equals("{\"project_id\":[\"can't be blank\"]}") || json.equals("{\"description\":[\"can't be blank\"],\"project_id\":[\"can't be blank\"]}")) {
                     message = "Project can't be blank.\nSelect a project from the Projects page then click New Sticky.";
                     error_found = true;
                 }
             }
 
-            if(error_found){
+            if(error_found) {
                 Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
                 toast.show();
             }
 
-            if(!error_found){
+            if(!error_found) {
                 // No Error found, load sticky, and go to sticky show page
 
                 boolean created = (sticky.id == 0);
@@ -334,7 +333,7 @@ public class StickiesNew extends SherlockActivity {
                     server_sticky = new Sticky();
                 }
 
-                if(sticky.id > 0){
+                if(sticky.id > 0) {
                     db.addOrUpdateSticky(sticky);
                 }
 
@@ -358,8 +357,8 @@ public class StickiesNew extends SherlockActivity {
                 String tag_name = "";
                 String tag_color = "#80FFFFFF";
 
-                // for(int i = 0; i < sticky.tags.length; i++){
-                //     if(i == 0){
+                // for(int i = 0; i < sticky.tags.length; i++) {
+                //     if(i == 0) {
                 //         tag_id = Integer.toString(sticky.tags[i].id);
                 //         tag_name = sticky.tags[i].name;
                 //         tag_color = sticky.tags[i].color;
@@ -381,7 +380,7 @@ public class StickiesNew extends SherlockActivity {
 
             // try {
             //     stickies_array = gson.fromJson(json, Sticky[].class);
-            //     if(stickies_array == null){
+            //     if(stickies_array == null) {
             //         stickies_array = new Sticky[0];
             //     }
             //     result = stickies_array.length + " Stick" + (stickies_array.length == 1 ? "y" : "ies");
@@ -390,11 +389,11 @@ public class StickiesNew extends SherlockActivity {
             //     result = "Login Failed: Please make sure your email and password are correct.";
             // }
 
-            // for(int i = 0; i < stickies_array.length; i++){
+            // for(int i = 0; i < stickies_array.length; i++) {
             //     stickies.add(stickies_array[i]);
             // }
 
-            // if(stickyAdapter != null){
+            // if(stickyAdapter != null) {
             //     stickyAdapter.notifyDataSetChanged();
             // }
        }
@@ -495,13 +494,13 @@ public class StickiesNew extends SherlockActivity {
 
         // // Convert the InputStream into a string
         // String contentAsString = "";
-        // if(is != null){
+        // if(is != null) {
         //     Log.d(TAG, "Before READIT");
         //     contentAsString = readIt(is, len);
         //     Log.d(TAG, "After READIT");
         // }
 
-        // if(contentAsString == null){
+        // if(contentAsString == null) {
         //     contentAsString = "";
         // }
 
