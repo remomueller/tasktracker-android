@@ -49,9 +49,9 @@ public class StickiesIndex extends SherlockFragmentActivity {
 
     ActionBar actionBar;
 
-    public ArrayList<Sticky> getStickies() {
-        return stickies;
-    }
+    // public ArrayList<Sticky> getStickies() {
+    //     return stickies;
+    // }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

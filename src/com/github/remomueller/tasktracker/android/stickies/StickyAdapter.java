@@ -22,12 +22,12 @@ public class StickyAdapter extends BaseAdapter {
 
     private Activity activity;
     private ArrayList<Sticky> data;
-    private static LayoutInflater inflater=null;
+    private static LayoutInflater inflater = null;
 
-    public StickyAdapter(Activity a, ArrayList<Sticky> d) {
-        activity = a;
-        data=d;
-        inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public StickyAdapter(Activity activity, ArrayList<Sticky> data) {
+        this.activity = activity;
+        this.data = data;
+        this.inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public int getCount() {
@@ -43,8 +43,8 @@ public class StickyAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        View vi=convertView;
-        if(convertView==null){
+        View vi = convertView;
+        if(convertView == null) {
             vi = inflater.inflate(R.layout.stickies_index_item, null);
         }
 
@@ -58,10 +58,8 @@ public class StickyAdapter extends BaseAdapter {
         Sticky sticky = new Sticky();
         sticky = data.get(position);
 
-
-
         sticky_id.setText(Integer.toString(sticky.id));
-        if(sticky.completed){
+        if(sticky.completed) {
             sticky_id.setPaintFlags(sticky_id.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }else{
             sticky_id.setPaintFlags(sticky_id.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
@@ -72,10 +70,10 @@ public class StickyAdapter extends BaseAdapter {
 
         // final TextView tagtext = new TextView(vi);
 
-        if(sticky.tags.length != 0){
-            for(int i = 0; i < sticky.tags.length; i++){
+        if(sticky.tags.length != 0) {
+            for(int i = 0; i < sticky.tags.length; i++) {
                 // final TextView tagtext = new TextView(vi);
-                if(i == 0){
+                if(i == 0) {
                     single_tag.setText(sticky.tags[i].name);
                     single_tag.setBackgroundColor(Color.parseColor(sticky.tags[i].color));
                     single_tag.setVisibility(View.VISIBLE);
