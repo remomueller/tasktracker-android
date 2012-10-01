@@ -40,8 +40,8 @@ import com.google.gson.JsonParseException;
 
 import com.github.remomueller.tasktracker.android.util.Base64;
 
-import com.github.remomueller.tasktracker.android.util.AsyncRequest;
-import com.github.remomueller.tasktracker.android.util.AsyncRequest.AsyncRequestFinishedListener;
+import com.github.remomueller.tasktracker.android.util.ProjectsRequest;
+import com.github.remomueller.tasktracker.android.util.ProjectsRequest.ProjectsRequestFinishedListener;
 import com.github.remomueller.tasktracker.android.util.DatabaseHandler;
 
 public class ProjectsIndex extends SherlockActivity {
@@ -143,29 +143,30 @@ public class ProjectsIndex extends SherlockActivity {
             }
         });
 
-        AsyncRequestFinishedListener finishedListener = new AsyncRequestFinishedListener()
+        ProjectsRequestFinishedListener finishedListener = new ProjectsRequestFinishedListener()
         {
             @Override
-            public void onTaskFinished(String json) {
-                Gson gson = new Gson();
-                Project[] array;
+            public void onTaskFinished(ArrayList<Project> loadedProjects) {
+                // Gson gson = new Gson();
+                // Project[] array;
 
-                try {
-                    array = gson.fromJson(json, Project[].class);
-                    if(array == null) array = new Project[0];
-                } catch (JsonParseException e) {
-                    array = new Project[0];
-                }
+                // try {
+                //     array = gson.fromJson(json, Project[].class);
+                //     if(array == null) array = new Project[0];
+                // } catch (JsonParseException e) {
+                //     array = new Project[0];
+                // }
 
-                for(int i = 0; i < array.length; i++) {
-                    db.addOrUpdateProject(array[i]);
-                }
+                // for(int i = 0; i < array.length; i++) {
+                //     db.addOrUpdateProject(array[i]);
+                // }
 
-                projects.addAll(db.findAllProjects(null));
+                // projects.addAll(db.findAllProjects(null));
+                projects.addAll(loadedProjects);
                 projectAdapter.notifyDataSetChanged();
             }
         };
 
-        new AsyncRequest(getApplicationContext(), "GET", "/projects.json", null, finishedListener).execute();
+        new ProjectsRequest(getApplicationContext(), "GET", "/projects.json", null, null, finishedListener).execute();
     }
 }

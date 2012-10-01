@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
-import com.github.remomueller.tasktracker.android.Project;
 import com.github.remomueller.tasktracker.android.Sticky;
 import com.github.remomueller.tasktracker.android.User;
 
@@ -36,7 +35,7 @@ import com.github.remomueller.tasktracker.android.util.WebRequest;
 // DELETE /stickies/1.json                                      // Delete Sticky (returns empty JSON)
 
 
-public class AsyncRequest extends AsyncTask<Void, Void, String> {
+public class StickiesRequest extends AsyncTask<Void, Void, ArrayList<Sticky>> {
     private static final String TAG = "TaskTrackerAndroid";
 
     private WebRequest webRequest;
@@ -44,9 +43,12 @@ public class AsyncRequest extends AsyncTask<Void, Void, String> {
     private String method;
     private String path;
     private String params;
+    private String conditions;
     private boolean doOutput;
     private boolean doInput;
-    private final AsyncRequestFinishedListener finishedListener;
+    private final StickiesRequestFinishedListener finishedListener;
+
+    DatabaseHandler db;
 
     // String params = URLEncoder.encode("project[name]", "UTF-8") + "=" + URLEncoder.encode(project.name, "UTF-8");
     // params += "&" + URLEncoder.encode("project[description]", "UTF-8") + "=" + URLEncoder.encode(project.description, "UTF-8");
@@ -54,34 +56,54 @@ public class AsyncRequest extends AsyncTask<Void, Void, String> {
     // params += "&" + URLEncoder.encode("project[start_date]", "UTF-8") + "=" + URLEncoder.encode(project.start_date, "UTF-8");
     // params += "&" + URLEncoder.encode("project[end_date]", "UTF-8") + "=" + URLEncoder.encode(project.end_date, "UTF-8");
 
-    public interface AsyncRequestFinishedListener {
-        void onTaskFinished(String json); // If you want to pass something back to the listener add a param to this method
+    public interface StickiesRequestFinishedListener {
+        void onTaskFinished(ArrayList<Sticky> stickies); // If you want to pass something back to the listener add a param to this method
     }
 
-    public AsyncRequest(Context context, String method, String path, String params, AsyncRequestFinishedListener finishedListener) {
+    public StickiesRequest(Context context, String method, String path, String params, String conditions, StickiesRequestFinishedListener finishedListener) {
         this.webRequest = new WebRequest(context, method, path, params);
-
+        this.conditions = conditions;
+        this.db = new DatabaseHandler(context);
         this.finishedListener = finishedListener;
     }
 
     @Override
-    protected String doInBackground(Void... params) {
+    protected ArrayList<Sticky> doInBackground(Void... params) {
         try {
             // Check if web request is required.
-            // Web Request, and JSON Deserialization need to be done here.
-            return webRequest.webRequest();
+
+            // Web Request for New Stickies
+            String json = webRequest.webRequest();
+
+            Gson gson = new Gson();
+            Sticky[] array;
+
+            try {
+                array = gson.fromJson(json, Sticky[].class);
+                if(array == null) array = new Sticky[0];
+            } catch (JsonParseException e) {
+                array = new Sticky[0];
+            }
+
+            for(int i = 0; i < array.length; i++) {
+                db.addOrUpdateSticky(array[i]);
+            }
+
+            // Load Stickies from Internal Database
+            ArrayList<Sticky> stickies = db.findAllStickies(conditions);
+
+            return stickies;
         } catch (IOException e) {
-            return "Unable to Connect: Make sure you have an active network connection." + e;
+            ArrayList<Sticky> stickies = new ArrayList<Sticky>();
+            // return "Unable to Connect: Make sure you have an active network connection." + e;
+            return stickies;
         }
     }
 
     @Override
-    protected void onPostExecute(String json) {
-        super.onPostExecute(json);
-        // Sticky sticky = new Sticky();
-        // sticky.id = 5;
-        // ArrayList<Project> projects = new ArrayList<Project>();
-        finishedListener.onTaskFinished(json);
+    protected void onPostExecute(ArrayList<Sticky> stickies) {
+        super.onPostExecute(stickies);
+        finishedListener.onTaskFinished(stickies);
    }
 
 }
