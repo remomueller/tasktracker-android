@@ -1,4 +1,4 @@
-== 0.2.0 (unreleased)
+== 0.2.0
 
 * Enhancements
   * Projects can now be created from the Projects page
