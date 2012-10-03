@@ -7,6 +7,7 @@
   * Stickies due dates can now be set as blank
     * NOTE: Stickies without due dates won't currently be available in the list views as these filter by date
   * Stickies can now be tagged based on tags available for the specific project
+    * NOTE: Project tags currently need to be created using the web interface
 
 == 0.1.1
 
