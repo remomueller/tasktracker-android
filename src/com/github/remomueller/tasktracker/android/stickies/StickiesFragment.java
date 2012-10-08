@@ -72,9 +72,7 @@ public class StickiesFragment extends SherlockFragment {
         super.onCreate(savedInstanceState);
         this.setRetainInstance(true);
 
-         // db = new DatabaseHandler(getActivity());
-
-        // new GetStickies().execute(Integer.toString(position));
+        if(current_project == null) current_project = new Project();
 
         Date today = new Date();
 
@@ -100,6 +98,7 @@ public class StickiesFragment extends SherlockFragment {
         };
 
         String params = "";
+
 
         if(position == 0) { // Completed
             params = "status[]=completed&order=stickies.due_date+DESC&due_date_end_date="+due_date_today;
@@ -128,7 +127,7 @@ public class StickiesFragment extends SherlockFragment {
             params = params + "&owner_id=me";
 
         // Filter by project if project is selected
-        if(current_project != null && current_project.id > 0)
+        if(current_project.id > 0)
             params = params + "&project_id=" + current_project.id;
 
         if(getActivity() != null)
@@ -154,17 +153,12 @@ public class StickiesFragment extends SherlockFragment {
         list.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Sticky sticky = stickies.get(position);
-                // String text = stickies.get(position).id + ": " + stickies.get(position).description;
+                if(current_project == null) current_project = new Project();
 
                 Intent intent = new Intent(getActivity(), StickiesShow.class);
 
-                // intent.putExtra(Sticky.STICKY_POSITION, Integer.toString(position));
                 intent.putExtra(Sticky.STICKY_ID, Integer.toString(sticky.id));
                 intent.putExtra(Project.PROJECT_ID, Integer.toString(current_project.id));
-                // intent.putExtra(Sticky.STICKY_DESCRIPTION, sticky.description);
-                // intent.putExtra(Sticky.STICKY_GROUP_DESCRIPTION, sticky.group_description);
-                // intent.putExtra(Sticky.STICKY_DUE_DATE, sticky.due_date);
-                // intent.putExtra(Sticky.STICKY_COMPLETED, Boolean.toString(sticky.completed));
 
                 String tag_id = "0";
                 String tag_name = "";
