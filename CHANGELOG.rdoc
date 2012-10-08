@@ -1,4 +1,4 @@
-== 0.2.1 (unreleased)
+== 0.2.1
 
 * Bug Fix
   * Fixed occasional crash that occurred when the app was reloaded from being in the background
